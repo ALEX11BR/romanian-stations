@@ -1,0 +1,99 @@
+<?php
+	const BUFFER_TOP_X_SPRITE = 'template_grid_explicit_offset(1, 1, -41, -5)';
+	const BUFFER_TOP_Y_SPRITE = 'template_grid_explicit_offset(1, 2, -21, -5)';
+	const BUFFER_BOTTOM_X_SPRITE = 'template_grid_explicit_offset(1, 3, -11, -20)';
+	const BUFFER_BOTTOM_Y_SPRITE = 'template_grid_explicit_offset(1, 4, -51, -20)';
+?>
+
+spriteset(spriteset_buffer_all, "img/buffers.png") {
+	// 0 = top buffer, track across X
+	<?= BUFFER_TOP_X_SPRITE ?>
+	// 1 = top buffer, track across Y
+	<?= BUFFER_TOP_Y_SPRITE ?>
+	// 2 = bottom buffer, track across X
+	<?= BUFFER_BOTTOM_X_SPRITE ?>
+	// 3 = bottom buffer, track across Y
+	<?= BUFFER_BOTTOM_Y_SPRITE ?>
+}
+spriteset(spriteset_buffer_only_top, "img/buffers.png") {
+	// 0 = top buffer, track across X
+	<?= BUFFER_TOP_X_SPRITE ?>
+	// 1 = top buffer, track across Y
+	<?= BUFFER_TOP_Y_SPRITE ?>
+	// 2 = bottom buffer, track across X
+	<?= EMPTY_SPRITE ?>
+	// 3 = bottom buffer, track across Y
+	<?= EMPTY_SPRITE ?>
+}
+spriteset(spriteset_buffer_only_bottom, "img/buffers.png") {
+	// 0 = top buffer, track across X
+	<?= EMPTY_SPRITE ?>
+	// 1 = top buffer, track across Y
+	<?= EMPTY_SPRITE ?>
+	// 2 = bottom buffer, track across X
+	<?= BUFFER_BOTTOM_X_SPRITE ?>
+	// 3 = bottom buffer, track across Y
+	<?= BUFFER_BOTTOM_Y_SPRITE ?>
+}
+
+switch(FEAT_STATIONS, SELF, switch_buffer, rail_continuation & 3) {
+	0: return spriteset_buffer_all;
+	1: return spriteset_buffer_only_top;
+	2: return spriteset_buffer_only_bottom;
+	return spriteset_empty;
+}
+
+
+// We expect the switch_buffer to be supplied as custom spriteset at index 0
+<?php function buffers_X() { ?>
+	// Top buffer
+	building {
+		sprite: CUSTOM(0, 0);
+		<?php use_default_palette() ?>
+		xoffset: 0;
+		yoffset: 5;
+		zoffset: 0;
+		xextent: 1;
+		yextent: 6;
+		zextent: 4;
+	}
+	// Bottom buffer
+	building {
+		sprite: CUSTOM(0, 2);
+		<?php use_default_palette() ?>
+
+		xoffset: 15;
+		yoffset: 5;
+		zoffset: 0;
+		xextent: 1;
+		yextent: 6;
+		zextent: 4;
+	}
+<?php } ?>
+
+<?php function buffers_Y() { ?>
+	// Top buffer
+	building {
+		sprite: CUSTOM(0, 1);
+		<?php use_default_palette() ?>
+
+		xoffset: 5;
+		yoffset: 0;
+		zoffset: 0;
+		xextent: 6;
+		yextent: 1;
+		zextent: 4;
+	}
+	// Bottom buffer
+	building {
+		sprite: CUSTOM(0, 3);
+		<?php use_default_palette() ?>
+
+		xoffset: 5;
+		yoffset: 15;
+		zoffset: 0;
+		xextent: 6;
+		yextent: 1;
+		zextent: 4;
+	}
+<?php } ?>

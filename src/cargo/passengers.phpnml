@@ -1,0 +1,84 @@
+// Passenger cargo load levels for one platform (0 = across X, 1 = across Y)
+<?php for ($i = 1; $i <= 9; $i++) { ?>
+	spriteset(spriteset_passengers_<?= $i ?>, "img/passengers.png") {
+		template_grid_platform(<?= $i ?>, 1, <?= PASSENGERS_HEIGHT ?>)
+		template_grid_platform(<?= $i ?>, 2, <?= PASSENGERS_HEIGHT ?>)
+	}
+<?php } ?>
+
+// We compute the number of passengers that should be displayed on a tile
+// as passengers_waiting / tiles_of_station. platform_count * platform_length
+// is a good approximation for the number of tiles in a station.
+// As the numbers will not divide exactly, the decimal part represents a probability
+// to ceil up the division result. We do a multiplication by 16 to simulate some decimals.
+// We divide by 2 if we have a tile with two platforms.
+// I wasn't aware of STAT_FLAG_DISTRIBUTED_CARGO when I designed this.
+<?php
+	for ($rand = 0; $rand < 16; $rand++) {
+		for ($platforms_per_tile = 1; $platforms_per_tile <= 2; $platforms_per_tile++) {
+?>
+	switch(
+		FEAT_STATIONS,
+		SELF,
+		switch_passengers_level_<?= $platforms_per_tile ?>_<?= $rand ?>,
+		(cargo_amount_waiting(PASS) * (16 / <?= $platforms_per_tile ?>) / platform_length(PLATFORM_SAME_STATION) / platform_count(PLATFORM_SAME_STATION) + <?= $rand ?>) / 16
+	) {
+		0: spriteset_empty;
+		1: spriteset_passengers_1;
+		2: spriteset_passengers_2;
+		3..4: spriteset_passengers_3;
+		5..7: spriteset_passengers_4;
+		8..10: spriteset_passengers_5;
+		11..13: spriteset_passengers_6;
+		14..16: spriteset_passengers_7;
+		17..19: spriteset_passengers_8;
+		return spriteset_passengers_9;
+	}
+<?php
+		}
+	}
+?>
+
+// We use this to rerandomize the random_bits_tile when the cargo in station changes
+<?php for ($platforms_per_tile = 1; $platforms_per_tile <= 2; $platforms_per_tile++) { ?>
+	random_switch(
+		FEAT_STATIONS,
+		TILE,
+		random_switch_passengers_level_<?= $platforms_per_tile ?>,
+		bitmask(
+			TRIGGER_STATION_NEW_CARGO,
+			TRIGGER_STATION_TRAIN_ARRIVES,
+			TRIGGER_STATION_TRAIN_LEAVES,
+			TRIGGER_STATION_TRAIN_LOADS_UNLOADS,
+		),
+	) {
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_0;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_1;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_2;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_3;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_4;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_5;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_6;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_7;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_8;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_9;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_10;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_11;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_12;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_13;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_14;
+		1: switch_passengers_level_<?= $platforms_per_tile ?>_15;
+	}
+<?php } ?>
+
+
+<?php function passengers(string $axis, string $platform_position, string $layout_position, int $platform_height) { ?>
+	building {
+		sprite: DEFAULT(<?= $axis === 'X' ? 0 : 1 ?>);
+		<?php use_default_palette() ?>
+
+		<?php hide_building_logic($platform_position, $layout_position) ?>
+
+		<?php ("platform_{$platform_position}_{$axis}_offsets")(PASSENGERS_HEIGHT, $platform_height) ?>
+	}
+<?php } ?>

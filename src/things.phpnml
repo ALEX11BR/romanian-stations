@@ -1,0 +1,78 @@
+<?php
+	const CONCRETE_SLABS_HEIGHT = 1;
+	const ASPHALT_HEIGHT = 3;
+
+	const PASSENGERS_HEIGHT = 6;
+
+	const RAIL_FENCE_HEIGHT = 6;
+	const STATION_SIGN_HEIGHT = 6;
+	const POLES_HEIGHT = 8;
+
+	$id = 0;
+?>
+
+spriteset(spriteset_things, "img/things.png") {
+	<?php define('THING_CONCRETE_SLABS_PLATFORM_X', $id++); ?>
+	template_grid_platform(2, 1, <?= CONCRETE_SLABS_HEIGHT ?>)
+	<?php define('THING_CONCRETE_SLABS_PLATFORM_Y', $id++); ?>
+	template_grid_platform(2, 2, <?= CONCRETE_SLABS_HEIGHT ?>)
+	<?php define('THING_CONCRETE_SLABS_CONTINUOUS_BOTTOM_OVERLAY_X', $id++); ?>
+	template_grid_childsprite(3, 1, <?= CONCRETE_SLABS_HEIGHT ?>)
+	<?php define('THING_CONCRETE_SLABS_CONTINUOUS_BOTTOM_OVERLAY_Y', $id++); ?>
+	template_grid_childsprite(3, 2, <?= CONCRETE_SLABS_HEIGHT ?>)
+	<?php define('THING_CONCRETE_SLABS_CONTINUOUS_TOP_OVERLAY_X', $id++); ?>
+	template_grid_childsprite(3, 3, <?= CONCRETE_SLABS_HEIGHT ?>)
+	<?php define('THING_CONCRETE_SLABS_CONTINUOUS_TOP_OVERLAY_Y', $id++); ?>
+	template_grid_childsprite(3, 4, <?= CONCRETE_SLABS_HEIGHT ?>)
+
+	<?php define('THING_ASPHALT_PLATFORM_TOP_X', $id++); ?>
+	template_grid_platform(4, 1, <?= ASPHALT_HEIGHT ?>)
+	<?php define('THING_ASPHALT_PLATFORM_TOP_Y', $id++); ?>
+	template_grid_platform(4, 2, <?= ASPHALT_HEIGHT ?>)
+	<?php define('THING_ASPHALT_PLATFORM_BOTTOM_X', $id++); ?>
+	template_grid_platform(4, 3, <?= ASPHALT_HEIGHT ?>)
+	<?php define('THING_ASPHALT_PLATFORM_BOTTOM_Y', $id++); ?>
+	template_grid_platform(4, 4, <?= ASPHALT_HEIGHT ?>)
+
+	<?php define('THING_RAIL_FENCE_X', $id++); ?>
+	template_grid_platform_wide(10, 1, <?= RAIL_FENCE_HEIGHT ?>, 1, 0)
+	<?php define('THING_RAIL_FENCE_Y', $id++); ?>
+	template_grid_platform_wide(10, 2, <?= RAIL_FENCE_HEIGHT ?>, 0, 1)
+
+	<?php define('THING_STATION_SIGN_X', $id++); ?>
+	template_grid_platform(11, 1, 0)
+	<?php define('THING_STATION_SIGN_Y', $id++); ?>
+	template_grid_platform(11, 2, 0)
+
+	<?php define('THING_POLES_X', $id++); ?>
+	template_grid_platform_wide(13, 1, 9, 1, 0)
+	<?php define('THING_POLES_Y', $id++); ?>
+	template_grid_platform_wide(13, 2, 9, 0, 1)
+
+	<?php define('THING_METAL_ROOF_TOP_X', $id++); ?>
+	template_grid_platform(14, 1, 4)
+	<?php define('THING_METAL_ROOF_TOP_Y', $id++); ?>
+	template_grid_platform(14, 2, 4)
+	<?php define('THING_METAL_ROOF_BOTTOM_X', $id++); ?>
+	template_grid_platform(14, 3, 7)
+	<?php define('THING_METAL_ROOF_BOTTOM_Y', $id++); ?>
+	template_grid_platform(14, 4, 7)
+
+	<?php define('THING_BENCH_TOP_X', $id++); ?>
+	template_grid_platform(15, 1, 0)
+	<?php define('THING_BENCH_TOP_Y', $id++); ?>
+	template_grid_platform(15, 2, 0)
+	<?php define('THING_BENCH_BOTTOM_X', $id++); ?>
+	template_grid_platform(15, 3, 0)
+	<?php define('THING_BENCH_BOTTOM_Y', $id++); ?>
+	template_grid_platform(15, 4, 0)
+
+	<?php define('THING_UNDERPASS_TOP_X', $id++); ?>
+	template_grid_platform(16, 1, 1)
+	<?php define('THING_UNDERPASS_TOP_Y', $id++); ?>
+	template_grid_platform(16, 2, 1)
+	<?php define('THING_UNDERPASS_BOTTOM_X', $id++); ?>
+	template_grid_platform(16, 3, 0)
+	<?php define('THING_UNDERPASS_BOTTOM_Y', $id++); ?>
+	template_grid_platform(16, 4, 0)
+}

@@ -1,0 +1,53 @@
+##grflangid 0x01
+STR_GRF_NAME :Romanian stations
+STR_GRF_DESCRIPTION :Set of nice Romania-inspired passenger railway stations.
+
+STR_PARAM_METAL_ROOF_RECOLOR :Station roof colour
+STR_PARAM_METAL_ROOF_RECOLOR_DESC :Colour of the metallic station roofs. By default, the colour is set to the company colour.
+
+STR_PARAM_PLATFORM_ALTERNATE :Alternate platform sides of one-platform stations
+STR_PARAM_PLATFORM_ALTERNATE_DESC :If this setting is on, building one-platform stations will make the platform side (top or bottom) of the tiles to alternate through the tracks built in one go.
+
+STR_PARAM_COLOUR_COMPANY :Company colour
+STR_PARAM_COLOUR_DARK_BLUE :Dark blue
+STR_PARAM_COLOUR_PALE_GREEN :Pale green
+STR_PARAM_COLOUR_PINK :Pink
+STR_PARAM_COLOUR_YELLOW :Yellow
+STR_PARAM_COLOUR_RED :Red
+STR_PARAM_COLOUR_LIGHT_BLUE :Light blue
+STR_PARAM_COLOUR_GREEN :Green
+STR_PARAM_COLOUR_DARK_GREEN :Dark green
+STR_PARAM_COLOUR_BLUE :Blue
+STR_PARAM_COLOUR_CREAM :Cream
+STR_PARAM_COLOUR_MAUVE :Mauve
+STR_PARAM_COLOUR_PURPLE :Purple
+STR_PARAM_COLOUR_ORANGE :Orange
+STR_PARAM_COLOUR_BROWN :Brown
+STR_PARAM_COLOUR_GREY :Grey
+STR_PARAM_COLOUR_WHITE :White
+
+STR_CLASS_NAME_PASSENGERS :Romanian stations: Passenger stations
+STR_STATION_NAME_EMPTY :Empty station
+
+STR_STATION_NAME_CONCRETE_SLABS_BOTH :Concrete slabs (Both platforms)
+STR_STATION_NAME_CONCRETE_SLABS_TOP :Concrete slabs (Top platform)
+STR_STATION_NAME_CONCRETE_SLABS_BOTTOM :Concrete slabs (Bottom platform)
+
+STR_STATION_NAME_ASPHALT_BOTH :Asphalt (Both platforms)
+STR_STATION_NAME_ASPHALT_TOP :Asphalt (Top platform)
+STR_STATION_NAME_ASPHALT_BOTTOM :Asphalt (Bottom platform)
+STR_STATION_NAME_ASPHALT_METAL_ROOF_BOTH :Asphalt (Both platforms) with metallic roof
+STR_STATION_NAME_ASPHALT_METAL_ROOF_TOP :Asphalt (Top platform) with metallic roof
+STR_STATION_NAME_ASPHALT_METAL_ROOF_BOTTOM :Asphalt (Bottom platform) with metallic roof
+STR_STATION_NAME_ASPHALT_BENCH_BOTH :Asphalt (Both platforms) with benches
+STR_STATION_NAME_ASPHALT_BENCH_TOP :Asphalt (Top platform) with benches
+STR_STATION_NAME_ASPHALT_BENCH_BOTTOM :Asphalt (Bottom platform) with benches
+STR_STATION_NAME_ASPHALT_BENCH_METAL_ROOF_BOTH :Asphalt (Both platforms) with benches, metallic roof
+STR_STATION_NAME_ASPHALT_BENCH_METAL_ROOF_TOP :Asphalt (Top platform) with benches, metallic roof
+STR_STATION_NAME_ASPHALT_BENCH_METAL_ROOF_BOTTOM :Asphalt (Bottom platform) with benches, metallic roof
+STR_STATION_NAME_ASPHALT_UNDERPASS_BOTH :Asphalt (Both platforms) with underpass
+STR_STATION_NAME_ASPHALT_UNDERPASS_TOP :Asphalt (Top platform) with underpass
+STR_STATION_NAME_ASPHALT_UNDERPASS_BOTTOM :Asphalt (Bottom platform) with underpass
+STR_STATION_NAME_ASPHALT_UNDERPASS_METAL_ROOF_BOTH :Asphalt (Both platforms) with underpass, metallic roof
+STR_STATION_NAME_ASPHALT_UNDERPASS_METAL_ROOF_TOP :Asphalt (Top platform) with underpass, metallic roof
+STR_STATION_NAME_ASPHALT_UNDERPASS_METAL_ROOF_BOTTOM :Asphalt (Bottom platform) with underpass, metallic roof

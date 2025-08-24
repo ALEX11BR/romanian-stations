@@ -1,0 +1,20 @@
+<?php function station_sign(string $axis, string $platform_position, string $layout_position, int $z_off) { ?>
+building {
+	sprite: spriteset_things(<?= constant("THING_STATION_SIGN_{$axis}") ?>);
+	<?php use_default_palette() ?>
+
+	<?php hide_building_logic($platform_position, $layout_position) ?>
+	
+	<?php
+		$main_axis = strtolower($axis);
+		$other_axis = $main_axis === 'x' ? 'y' : 'x';
+	?>
+
+	<?= $main_axis ?>offset: 0;
+	<?= $other_axis ?>offset: <?= $platform_position === 'top' ? 0 : 16 ?>;
+	zoffset: <?= $z_off ?>;
+	<?= $main_axis ?>extent: 16;
+	<?= $other_axis ?>extent: 0;
+	zextent: <?= STATION_SIGN_HEIGHT ?>;
+}
+<?php } ?>

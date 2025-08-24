@@ -1,0 +1,170 @@
+grf {
+	grfid: "ap\01\01";
+	name: string(STR_GRF_NAME);
+	desc: string(STR_GRF_DESCRIPTION);
+	version: 1;
+	min_compatible_version: 1;
+
+	param 1 {
+		param_metal_roof_recolour {
+			type: int;
+			name: string(STR_PARAM_METAL_ROOF_RECOLOR);
+			desc: string(STR_PARAM_METAL_ROOF_RECOLOR_DESC);
+
+			min_value: 0;
+			max_value: 16;
+			def_value: 4;
+			names: {
+				0: string(STR_PARAM_COLOUR_DARK_BLUE);
+				1: string(STR_PARAM_COLOUR_PALE_GREEN);
+				2: string(STR_PARAM_COLOUR_PINK);
+				3: string(STR_PARAM_COLOUR_YELLOW);
+				4: string(STR_PARAM_COLOUR_RED);
+				5: string(STR_PARAM_COLOUR_LIGHT_BLUE);
+				6: string(STR_PARAM_COLOUR_GREEN);
+				7: string(STR_PARAM_COLOUR_DARK_GREEN);
+				8: string(STR_PARAM_COLOUR_BLUE);
+				9: string(STR_PARAM_COLOUR_CREAM);
+				10: string(STR_PARAM_COLOUR_MAUVE);
+				11: string(STR_PARAM_COLOUR_PURPLE);
+				12: string(STR_PARAM_COLOUR_ORANGE);
+				13: string(STR_PARAM_COLOUR_BROWN);
+				14: string(STR_PARAM_COLOUR_GREY);
+				15: string(STR_PARAM_COLOUR_WHITE);
+				16: string(STR_PARAM_COLOUR_COMPANY);
+			};
+		}
+	}
+	param 2 {
+		param_platform_alternate {
+			type: bool;
+			name: string(STR_PARAM_PLATFORM_ALTERNATE);
+			desc: string(STR_PARAM_PLATFORM_ALTERNATE_DESC);
+			def_value: 1;
+		}
+	}
+}
+
+cargotable {
+	PASS
+}
+
+
+// Here height means height above the ground
+template template_grid_platform(grid_y, grid_x, height) {
+	// topleft x,      topleft y,                 width, height,      xoffset, yoffset
+	[grid_x * 70 - 50, grid_y * 40 - 20 - height, 64,    31 + height, -31,     -height]
+}
+template template_grid_childsprite(grid_y, grid_x, height) {
+	// topleft x,      topleft y,                 width, height,      xoffset, yoffset
+	[grid_x * 70 - 50, grid_y * 40 - 20 - height, 64,    31 + height, 0,    0]
+}
+
+template template_grid_explicit_offset(grid_y, grid_x, offset_x, offset_y) {
+	// topleft x,      topleft y,        width, height, xoffset,  yoffset
+	[grid_x * 70 - 50, grid_y * 40 - 20, 64,    31,     offset_x, offset_y]
+}
+template template_grid_platform_wide(grid_y, grid_x, height, left_offset, right_offset) {
+	// topleft x,                    topleft y,                 width,                           height,      xoffset,           yoffset
+	[grid_x * 70 - 50 - left_offset, grid_y * 40 - 20 - height, 64 + left_offset + right_offset, 31 + height, -31 - left_offset, -height]
+}
+
+
+<?php function use_default_palette() { ?>
+	recolour_mode: RECOLOUR_REMAP;
+	palette: PALETTE_USE_DEFAULT;
+<?php } ?>
+
+<?php function use_metal_roof_palette() { ?>
+	recolour_mode: RECOLOUR_REMAP;
+	palette: palette_1cc(
+		param_metal_roof_recolour == 16 ? company_colour1 : param_metal_roof_recolour
+	);
+<?php } ?>
+
+<?php
+	const EMPTY_SPRITE = 'template_grid_platform(1, 5, 0)';
+	const AXES = ['X', 'Y'];
+	const PLATFORMS_POSITIONS = ['both', 'top', 'bottom'];
+?>
+
+
+spriteset(spriteset_empty, "img/things.png") {
+	<?php
+		for ($i = 1; $i <= 4; $i++) {
+			echo EMPTY_SPRITE;
+		}
+	?>
+}
+
+
+<?php
+	// Swapping these values makes the purchase view always display the bottom one
+	const KEEP_TILE_TYPE = 2;
+	const ALTERNATE_TILE_TYPE = 0;
+?>
+switch(FEAT_STATIONS, SELF, switch_tile_type, getbits(extra_callback_info1, 8, 1) & param_platform_alternate) {
+	0: return <?= KEEP_TILE_TYPE ?>;
+	1: return <?= ALTERNATE_TILE_TYPE ?>;
+}
+
+
+<?php function ground_rail(string $axis) { ?>
+	ground {
+		sprite: GROUNDSPRITE_RAIL_<?= $axis ?>;
+	}
+<?php } ?>
+
+<?php function platform_top_X_offsets(int $height, int $z_off) { ?>
+	xoffset: 0;
+	yoffset: 0;
+	zoffset: <?= $z_off ?>;
+	xextent: 16;
+	yextent: 5;
+	zextent: <?= $height ?>;
+<?php } ?>
+
+<?php function platform_top_Y_offsets(int $height, int $z_off) { ?>
+	xoffset: 0;
+	yoffset: 0;
+	zoffset: <?= $z_off ?>;
+	xextent: 5;
+	yextent: 16;
+	zextent: <?= $height ?>;
+<?php } ?>
+
+<?php function platform_bottom_X_offsets(int $height, int $z_off) { ?>
+	xoffset: 0;
+	yoffset: 11;
+	zoffset: <?= $z_off ?>;
+	xextent: 16;
+	yextent: 5;
+	zextent: <?= $height ?>;
+<?php } ?>
+
+<?php function platform_bottom_Y_offsets(int $height, int $z_off) { ?>
+	xoffset: 11;
+	yoffset: 0;
+	zoffset: <?= $z_off ?>;
+	xextent: 5;
+	yextent: 16;
+	zextent: <?= $height ?>;
+<?php } ?>
+
+<?php function hide_building_logic(string $platform_position, string $layout_position) { ?>
+	<?php if ($layout_position != 'both') { ?>
+		<?php if ($layout_position === $platform_position) { ?>
+			hide_sprite: (tile_type & 2) != <?= KEEP_TILE_TYPE ?>;
+		<?php } else { ?>
+			hide_sprite: (tile_type & 2) != <?= ALTERNATE_TILE_TYPE ?>;
+		<?php } ?>
+	<?php } ?>
+<?php } ?>
+
+<?php include_once 'buffers.phpnml' ?>
+<?php include_once 'things.phpnml' ?>
+
+<?php include_once 'cargo/passengers.phpnml' ?>
+
+<?php include_once 'props/props.phpnml' ?>
+<?php include_once 'stations/stations.phpnml' ?>

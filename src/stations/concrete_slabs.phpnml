@@ -1,0 +1,54 @@
+<?php function concrete_slabs_platform(string $axis, string $platform_position, string $layout_position) { ?>
+	// Platform
+	building {
+		sprite: spriteset_things(<?= constant("THING_CONCRETE_SLABS_PLATFORM_{$axis}") ?>);
+		<?php use_default_palette() ?>
+
+		<?php hide_building_logic($platform_position, $layout_position) ?>
+
+		<?php ("platform_{$platform_position}_{$axis}_offsets")(CONCRETE_SLABS_HEIGHT, 0) ?>
+	}
+	// Platform overlay for continuous platforms
+	childsprite {
+		sprite: spriteset_things(<?= constant("THING_CONCRETE_SLABS_CONTINUOUS_".strtoupper($platform_position)."_OVERLAY_{$axis}") ?>);
+		<?php use_default_palette() ?>
+
+		hide_sprite: platform_number_from_<?= $platform_position === 'top' ? 'start' : 'end' ?>(PLATFORM_SAME_STATION) == 0;
+	}
+	<?php passengers($axis, $platform_position, $layout_position, CONCRETE_SLABS_HEIGHT) ?>
+<?php } ?>
+
+<?php $id = 2; ?>
+<?php foreach (PLATFORMS_POSITIONS as $platforms_position) { ?>
+	<?php foreach (AXES as $axis) { ?>
+		spritelayout spritelayout_concrete_slabs_<?= $platforms_position ?>_<?= $axis ?> {
+			<?php ground_rail($axis) ?>
+			<?php ("buffers_{$axis}")() ?>
+
+			<?php
+				concrete_slabs_platform($axis, 'top', $platforms_position);
+				concrete_slabs_platform($axis, 'bottom', $platforms_position);
+				station_sign($axis, 'top', $platforms_position, CONCRETE_SLABS_HEIGHT);
+				station_sign($axis, 'bottom', $platforms_position, CONCRETE_SLABS_HEIGHT);
+			?>
+		}
+	<?php } ?>
+
+	item(FEAT_STATIONS, station_concrete_slabs_<?= $platforms_position ?>, <?= $id++ ?>) {
+		property {
+			class: "ap\01\01";
+			classname: string(STR_CLASS_NAME_PASSENGERS);
+			name: string(STR_STATION_NAME_CONCRETE_SLABS_<?= strtoupper($platforms_position) ?>);
+		}
+		graphics {
+			sprite_layouts: [spritelayout_concrete_slabs_<?= $platforms_position ?>_X, spritelayout_concrete_slabs_<?= $platforms_position ?>_Y];
+			custom_spritesets: [switch_buffer];
+
+			<?php if ($platforms_position !== 'both') { ?>
+				select_tile_type: switch_tile_type;
+			<?php } ?>
+
+			random_switch_passengers_level_<?= $id == 'both' ? 2 : 1 ?>;
+		}
+	}
+<?php } ?>
