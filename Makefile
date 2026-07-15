@@ -1,5 +1,6 @@
 PHP ?= php
 NMLC ?= nmlc
+JINJA ?= jinja2
 
 OPENTTD_USER_DIR ?= $${XDG_DATA_HOME:-$$HOME/.local/share}/openttd
 
@@ -12,6 +13,8 @@ $(GRF_NAME).grf: main.nml $(wildcard img/*.png) $(wildcard lang/*.lng)
 main.nml: $(wildcard src/*.phpnml src/**/*.phpnml)
 	$(PHP) src/main.phpnml > main.nml
 
+alt.nml: $(wildcard src/*.jinja src/**/*.jinja)
+	$(JINJA) src/main.jinja > alt.nml
 
 .PHONY: clean
 clean:

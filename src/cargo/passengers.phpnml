@@ -13,6 +13,8 @@
 // to ceil up the division result. We do a multiplication by 16 to simulate some decimals.
 // We divide by 2 if we have a tile with two platforms.
 // I wasn't aware of STAT_FLAG_DISTRIBUTED_CARGO when I designed this.
+// Using STAT_FLAG_DISTRIBUTED_CARGO has some drawbacks:
+// - for whatever reason the preview icon in the station build window will show the maximum number of passengers when using `spritegroup`s
 <?php
 	for ($rand = 0; $rand < 16; $rand++) {
 		for ($platforms_per_tile = 1; $platforms_per_tile <= 2; $platforms_per_tile++) {
@@ -71,6 +73,10 @@
 	}
 <?php } ?>
 
+spritegroup spritegroup_passengers {
+	little: [spriteset_empty <?php for ($i = 1; $i <= 9; $i++) { ?>, spriteset_passengers_<?= $i ?> <?php } ?>];
+	lots: spriteset_passengers_9;
+}
 
 <?php function passengers(string $axis, string $platform_position, string $layout_position, int $platform_height) { ?>
 	building {

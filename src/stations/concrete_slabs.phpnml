@@ -39,6 +39,10 @@
 			class: "ap\01\01";
 			classname: string(STR_CLASS_NAME_PASSENGERS);
 			name: string(STR_STATION_NAME_CONCRETE_SLABS_<?= strtoupper($platforms_position) ?>);
+			// the line below requires NML 0.9.0 or later (and only setting one of the two flags doesn't work apparently)
+			//general_flags: bitmask(STAT_FLAG_DISTRIBUTED_CARGO_BY_AREA, STAT_FLAG_DISTRIBUTED_CARGO_BY_PERIMETER);
+			//cargo_threshold: 9;
+			heights: [1, 1, 1, 1];
 		}
 		graphics {
 			sprite_layouts: [spritelayout_concrete_slabs_<?= $platforms_position ?>_X, spritelayout_concrete_slabs_<?= $platforms_position ?>_Y];
@@ -49,6 +53,7 @@
 			<?php } ?>
 
 			random_switch_passengers_level_<?= $id == 'both' ? 2 : 1 ?>;
+			//spritegroup_passengers;
 		}
 	}
 <?php } ?>
