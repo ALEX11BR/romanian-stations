@@ -33,21 +33,21 @@ STR_STATION_NAME_CONCRETE_SLABS_BOTH :Concrete slabs (Both platforms)
 STR_STATION_NAME_CONCRETE_SLABS_TOP :Concrete slabs (Top platform)
 STR_STATION_NAME_CONCRETE_SLABS_BOTTOM :Concrete slabs (Bottom platform)
 
-STR_STATION_NAME_ASPHALT_BOTH :Asphalt (Both platforms)
-STR_STATION_NAME_ASPHALT_TOP :Asphalt (Top platform)
-STR_STATION_NAME_ASPHALT_BOTTOM :Asphalt (Bottom platform)
-STR_STATION_NAME_ASPHALT_METAL_ROOF_BOTH :Asphalt (Both platforms) with metallic roof
-STR_STATION_NAME_ASPHALT_METAL_ROOF_TOP :Asphalt (Top platform) with metallic roof
-STR_STATION_NAME_ASPHALT_METAL_ROOF_BOTTOM :Asphalt (Bottom platform) with metallic roof
-STR_STATION_NAME_ASPHALT_BENCH_BOTH :Asphalt (Both platforms) with benches
-STR_STATION_NAME_ASPHALT_BENCH_TOP :Asphalt (Top platform) with benches
-STR_STATION_NAME_ASPHALT_BENCH_BOTTOM :Asphalt (Bottom platform) with benches
-STR_STATION_NAME_ASPHALT_BENCH_METAL_ROOF_BOTH :Asphalt (Both platforms) with benches, metallic roof
-STR_STATION_NAME_ASPHALT_BENCH_METAL_ROOF_TOP :Asphalt (Top platform) with benches, metallic roof
-STR_STATION_NAME_ASPHALT_BENCH_METAL_ROOF_BOTTOM :Asphalt (Bottom platform) with benches, metallic roof
-STR_STATION_NAME_ASPHALT_UNDERPASS_BOTH :Asphalt (Both platforms) with underpass
-STR_STATION_NAME_ASPHALT_UNDERPASS_TOP :Asphalt (Top platform) with underpass
-STR_STATION_NAME_ASPHALT_UNDERPASS_BOTTOM :Asphalt (Bottom platform) with underpass
-STR_STATION_NAME_ASPHALT_UNDERPASS_METAL_ROOF_BOTH :Asphalt (Both platforms) with underpass, metallic roof
-STR_STATION_NAME_ASPHALT_UNDERPASS_METAL_ROOF_TOP :Asphalt (Top platform) with underpass, metallic roof
-STR_STATION_NAME_ASPHALT_UNDERPASS_METAL_ROOF_BOTTOM :Asphalt (Bottom platform) with underpass, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_BOTH :High asphalt (Both platforms)
+STR_STATION_NAME_HIGH_ASPHALT_TOP :High asphalt (Top platform)
+STR_STATION_NAME_HIGH_ASPHALT_BOTTOM :High asphalt (Bottom platform)
+STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_BOTH :High asphalt (Both platforms) with metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_TOP :High asphalt (Top platform) with metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_BOTTOM :High asphalt (Bottom platform) with metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_BOTH :High asphalt (Both platforms) with benches
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_TOP :High asphalt (Top platform) with benches
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_BOTTOM :High asphalt (Bottom platform) with benches
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_BOTH :High asphalt (Both platforms) with benches, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_TOP :High asphalt (Top platform) with benches, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_BOTTOM :High asphalt (Bottom platform) with benches, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_BOTH :High asphalt (Both platforms) with underpass
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_TOP :High asphalt (Top platform) with underpass
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_BOTTOM :High asphalt (Bottom platform) with underpass
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_BOTH :High asphalt (Both platforms) with underpass, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_TOP :High asphalt (Top platform) with underpass, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_BOTTOM :High asphalt (Bottom platform) with underpass, metallic roof

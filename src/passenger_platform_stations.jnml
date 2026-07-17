@@ -1,0 +1,193 @@
+{% from 'buffers.jnml' import buffers %}
+{% from 'cargo.jnml' import PASSENGERS_HEIGHT, cargo_passengers %}
+{% from 'common.jnml' import AXES, STATION_PLATFORM_SIDES, platform_offsets, use_default_palette, use_metal_roof_palette, ground_rail, hide_sprite_building %}
+{% from 'spriteset_things.jnml' import THINGS_IDS %}
+
+{% macro prop_fence(station_platform_side, platform_position, axis, platform_height) %}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['BLACK_YELLOW_FENCE_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building('BOTTOM' if station_platform_side == 'TOP' else 'TOP', platform_position) }}
+		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
+	}
+{% endmacro %}
+
+{% macro prop_station_sign(station_platform_side, platform_position, axis, platform_height) %}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['STATION_SIGN_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
+	}
+{% endmacro %}
+
+{% macro prop_bench(station_platform_side, platform_position, axis, platform_height) %}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['BENCH_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, PASSENGERS_HEIGHT + (1 if platform_position == 'BOTTOM' else -1), platform_height) }}
+	}
+{% endmacro %}
+
+{% macro prop_underpass(station_platform_side, platform_position, axis, platform_height) %}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['UNDERPASS_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, PASSENGERS_HEIGHT + (1 if platform_position == 'BOTTOM' else -1), platform_height) }}
+	}
+{% endmacro %}
+
+{% set POLES_HEIGHT = 8 %}
+{% macro prop_metal_roof(station_platform_side, platform_position, axis, platform_height) %}
+	// Poles
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['POLES_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
+	}
+	// Metal roof
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['METAL_ROOF_' + platform_position + '_' + axis] }});
+		{{ use_metal_roof_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 6, platform_height + POLES_HEIGHT) }}
+	}
+{% endmacro %}
+
+{% macro concrete_slabs_platform(station_platform_side, platform_position, axis) %}
+	// Platform
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_CONCRETE_SLABS_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 1, 0) }}
+	}
+	// Platform overlay for continuous platforms (in a way more convenient than using a switch for the platform sprite)
+	childsprite {
+		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_CONCRETE_SLABS_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0;
+	}
+{% endmacro %}
+
+{% macro high_asphalt_platform(station_platform_side, platform_position, axis) %}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_HIGH_ASPHALT_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 3, 0) }}
+	}
+{% endmacro %}
+
+// Station IDs are made up of the bits (starting from 1, as NML's bitmask function):
+// 1: Top platform
+// 2: Bottom platform
+// 3: High asphalt platform
+// 4: Roof
+// 5: Underpass
+// 6: Bench
+
+{% macro init_passenger_platform_stations() %}
+	{% for station_platform_side, platforms_id in STATION_PLATFORM_SIDES %}
+		{% for axis in AXES %}
+			spritelayout spritelayout_concrete_slabs_{{ station_platform_side }}_{{ axis }} {
+				{{ ground_rail(axis) }}
+				{{ buffers(axis) }}
+				{{ concrete_slabs_platform(station_platform_side, 'TOP', axis) }}
+				{{ concrete_slabs_platform(station_platform_side, 'BOTTOM', axis) }}
+				{{ cargo_passengers(station_platform_side, 'TOP', axis, 1) }}
+				{{ cargo_passengers(station_platform_side, 'BOTTOM', axis, 1) }}
+
+				{{prop_station_sign(station_platform_side, 'TOP', axis, 1)}}
+				{{prop_station_sign(station_platform_side, 'BOTTOM', axis, 1)}}
+				{% if station_platform_side != 'BOTH' %}
+					{{prop_fence(station_platform_side, 'TOP', axis, 1)}}
+					{{prop_fence(station_platform_side, 'BOTTOM', axis, 1)}}
+				{% endif %}
+			}
+		{% endfor %}
+
+		item(FEAT_STATIONS, station_concrete_slabs_{{ station_platform_side }}, {{ platforms_id }}) {
+			property {
+				class: "ap\01\01";
+				classname: string(STR_CLASS_NAME_PASSENGERS);
+				name: string(STR_STATION_NAME_CONCRETE_SLABS_{{ station_platform_side }});
+				cargo_random_triggers: [PASS];
+				heights: [1, 1, 1, 1];
+			}
+			graphics {
+				sprite_layouts: [
+					spritelayout_concrete_slabs_{{ station_platform_side }}_X,
+					spritelayout_concrete_slabs_{{ station_platform_side }}_Y
+				];
+				custom_spritesets: [switch_buffer];
+
+				{% if station_platform_side != 'BOTH' %}
+					select_tile_type: switch_tile_type;
+				{% endif %}
+
+				random_switch_passengers_{{ '1' if station_platform_side != 'BOTH' else '2'}};
+			}
+		}
+	{% endfor %}
+
+	{% for (central_furniture, central_furniture_id) in [('', 0), ('_UNDERPASS', 16), ('_BENCH', 32)] %}
+		{% for (over_furniture, over_furniture_id) in [('', 0), ('_METAL_ROOF', 8)] %}
+			{% for station_platform_side, platforms_id in STATION_PLATFORM_SIDES %}
+				{% set station_name = 'HIGH_ASPHALT' + central_furniture + over_furniture + '_' + station_platform_side %}
+
+				{% for axis in AXES %}
+					spritelayout spritelayout_{{ station_name }}_{{ axis }} {
+						{{ ground_rail(axis) }}
+						{{ buffers(axis) }}
+						{{ high_asphalt_platform(station_platform_side, 'TOP', axis) }}
+						{{ high_asphalt_platform(station_platform_side, 'BOTTOM', axis) }}
+						{{ cargo_passengers(station_platform_side, 'TOP', axis, 3) }}
+						{{ cargo_passengers(station_platform_side, 'BOTTOM', axis, 3) }}
+						{% if central_furniture == '_UNDERPASS' %}
+							{{ prop_underpass(station_platform_side, 'TOP', axis, 3) }}
+							{{ prop_underpass(station_platform_side, 'BOTTOM', axis, 3) }}
+						{% elif central_furniture == '_BENCH' %}
+							{{ prop_bench(station_platform_side, 'TOP', axis, 3) }}
+							{{ prop_bench(station_platform_side, 'BOTTOM', axis, 3) }}
+						{% endif %}
+						{% if over_furniture == '_METAL_ROOF' %}
+							{{ prop_metal_roof(station_platform_side, 'TOP', axis, 4) }}
+							{{ prop_metal_roof(station_platform_side, 'BOTTOM', axis, 4) }}
+						{% endif %}
+					}
+				{% endfor %}
+
+				item(FEAT_STATIONS, station_{{ station_name }}, {{ central_furniture_id + over_furniture_id + platforms_id + 4 }}) {
+					property {
+						class: "ap\01\01";
+						classname: string(STR_CLASS_NAME_PASSENGERS);
+						name: string(STR_STATION_NAME_{{ station_name }});
+						cargo_random_triggers: [PASS];
+						{% if over_furniture == '' %}
+							heights: [1, 1, 1, 1];
+						{% else %}
+							heights: [3, 3, 3, 3];
+						{% endif %}
+					}
+					graphics {
+						sprite_layouts: [
+							spritelayout_{{ station_name }}_X,
+							spritelayout_{{ station_name }}_Y
+						];
+						custom_spritesets: [switch_buffer];
+
+						{% if station_platform_side != 'BOTH' %}
+							select_tile_type: switch_tile_type;
+						{% endif %}
+
+						random_switch_passengers_{{ '1' if station_platform_side != 'BOTH' else '2'}};
+					}
+				}
+			{% endfor %}
+		{% endfor %}
+	{% endfor %}
+{% endmacro %}

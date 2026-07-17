@@ -2,23 +2,21 @@ PHP ?= php
 NMLC ?= nmlc
 JINJA ?= jinja2
 
+JINJA_FLAGS ?= --strict
 OPENTTD_USER_DIR ?= $${XDG_DATA_HOME:-$$HOME/.local/share}/openttd
 
-GRF_NAME ?= romanian-stations
+GRF_NAME ?= romanian_stations
 
 
-$(GRF_NAME).grf: main.nml $(wildcard img/*.png) $(wildcard lang/*.lng)
-	$(NMLC) --grf $(GRF_NAME).grf main.nml
+$(GRF_NAME).grf: $(GRF_NAME).nml $(wildcard img/*.png) $(wildcard lang/*.lng)
+	$(NMLC) --grf $(GRF_NAME).grf $(GRF_NAME).nml
 
-main.nml: $(wildcard src/*.phpnml src/**/*.phpnml)
-	$(PHP) src/main.phpnml > main.nml
-
-alt.nml: $(wildcard src/*.jinja src/**/*.jinja)
-	$(JINJA) src/main.jinja > alt.nml
+$(GRF_NAME).nml: $(wildcard src/*.jnml)
+	$(JINJA) $(JINJA_FLAGS) src/$(GRF_NAME).jnml > $(GRF_NAME).nml
 
 .PHONY: clean
 clean:
-	rm -f $(GRF_NAME).grf main.nml
+	rm -f $(GRF_NAME).grf $(GRF_NAME).nml
 
 .PHONY: install
 install: $(GRF_NAME).grf

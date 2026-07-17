@@ -1,0 +1,72 @@
+grf {
+	grfid: "ap\01\01";
+	name: string(STR_GRF_NAME);
+	desc: string(STR_GRF_DESCRIPTION);
+	version: 1;
+	min_compatible_version: 1;
+
+	param 1 {
+		param_metal_roof_recolour {
+			type: int;
+			name: string(STR_PARAM_METAL_ROOF_RECOLOR);
+			desc: string(STR_PARAM_METAL_ROOF_RECOLOR_DESC);
+
+			min_value: 0;
+			max_value: 16;
+			def_value: 4;
+			names: {
+				0: string(STR_PARAM_COLOUR_DARK_BLUE);
+				1: string(STR_PARAM_COLOUR_PALE_GREEN);
+				2: string(STR_PARAM_COLOUR_PINK);
+				3: string(STR_PARAM_COLOUR_YELLOW);
+				4: string(STR_PARAM_COLOUR_RED);
+				5: string(STR_PARAM_COLOUR_LIGHT_BLUE);
+				6: string(STR_PARAM_COLOUR_GREEN);
+				7: string(STR_PARAM_COLOUR_DARK_GREEN);
+				8: string(STR_PARAM_COLOUR_BLUE);
+				9: string(STR_PARAM_COLOUR_CREAM);
+				10: string(STR_PARAM_COLOUR_MAUVE);
+				11: string(STR_PARAM_COLOUR_PURPLE);
+				12: string(STR_PARAM_COLOUR_ORANGE);
+				13: string(STR_PARAM_COLOUR_BROWN);
+				14: string(STR_PARAM_COLOUR_GREY);
+				15: string(STR_PARAM_COLOUR_WHITE);
+				16: string(STR_PARAM_COLOUR_COMPANY);
+			};
+		}
+	}
+	param 2 {
+		param_platform_alternate {
+			type: bool;
+			name: string(STR_PARAM_PLATFORM_ALTERNATE);
+			desc: string(STR_PARAM_PLATFORM_ALTERNATE_DESC);
+			def_value: 1;
+		}
+	}
+}
+
+cargotable {
+	PASS
+}
+
+{% from 'common.jnml' import init_hide_sprite_building_logic, template_grid -%}
+{{ init_hide_sprite_building_logic() }}
+
+// Simply using '[]' as an empty sprite doesn't work, it results in a question mark being displayed
+spriteset(spriteset_empty, "img/things.png") {
+	{%- for i in range(4) %}
+		{{- template_grid(1, 5) }}
+	{%- endfor %}
+}
+
+{% from 'spriteset_things.jnml' import init_spriteset_things -%}
+{{ init_spriteset_things() }}
+
+{% from 'buffers.jnml' import init_buffers -%}
+{{ init_buffers() }}
+
+{% from 'cargo.jnml' import init_cargo -%}
+{{ init_cargo() }}
+
+{% from 'passenger_platform_stations.jnml' import init_passenger_platform_stations -%}
+{{ init_passenger_platform_stations() }}

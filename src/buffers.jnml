@@ -1,0 +1,96 @@
+{% from 'common.jnml' import template_grid, use_default_palette %}
+
+{% macro buffer_template_top_x() %}
+	{{ template_grid(1, 1, offset_x=-41, offset_y=-5) }}
+{%- endmacro %}
+{% macro buffer_template_top_y() %}
+	{{ template_grid(1, 2, offset_x=-21, offset_y=-5) }}
+{%- endmacro %}
+{% macro buffer_template_bottom_x() %}
+	{{ template_grid(1, 3, offset_x=-11, offset_y=-20) }}
+{%- endmacro %}
+{% macro buffer_template_bottom_y() %}
+	{{ template_grid(1, 4, offset_x=-51, offset_y=-20) }}
+{%- endmacro %}
+{% macro empty_template() %}
+	{{ template_grid(1, 5) }}
+{%- endmacro %}
+
+// For the buffers to work, the first custom spriteset must be the switch_buffer that is defined later in the file
+{% macro buffers(axis) %}
+	{% if axis == 'X' %}
+		building {
+			sprite: CUSTOM(0, 0);
+			{{ use_default_palette() }}
+			xoffset: 0;
+			yoffset: 5;
+			zoffset: 0;
+			xextent: 1;
+			yextent: 6;
+			zextent: 4;
+		}
+		building {
+			sprite: CUSTOM(0, 2);
+			{{ use_default_palette() }}
+			xoffset: 15;
+			yoffset: 5;
+			zoffset: 0;
+			xextent: 1;
+			yextent: 6;
+			zextent: 4;
+		}
+	{% else %}
+		building {
+			sprite: CUSTOM(0, 1);
+			{{ use_default_palette() }}
+			xoffset: 5;
+			yoffset: 0;
+			zoffset: 0;
+			xextent: 6;
+			yextent: 1;
+			zextent: 4;
+		}
+		building {
+			sprite: CUSTOM(0, 3);
+			{{ use_default_palette() }}
+			xoffset: 5;
+			yoffset: 15;
+			zoffset: 0;
+			xextent: 6;
+			yextent: 1;
+			zextent: 4;
+		}
+	{% endif %}
+{%- endmacro %}
+
+// In these spritesets:
+// 0 = top buffer, track across X
+// 1 = top buffer, track across Y
+// 2 = bottom buffer, track across X
+// 3 = bottom buffer, track across Y
+{% macro init_buffers() %}
+	spriteset(spriteset_buffer_all, "img/buffers.png") {
+		{{ buffer_template_top_x() }}
+		{{ buffer_template_top_y() }}
+		{{ buffer_template_bottom_x() }}
+		{{ buffer_template_bottom_y() }}
+	}
+	spriteset(spriteset_buffer_only_top, "img/buffers.png") {
+		{{ buffer_template_top_x() }}
+		{{ buffer_template_top_y() }}
+		{{ empty_template() }}
+		{{ empty_template() }}
+	}
+	spriteset(spriteset_buffer_only_bottom, "img/buffers.png") {
+		{{ empty_template() }}
+		{{ empty_template() }}
+		{{ buffer_template_bottom_x() }}
+		{{ buffer_template_bottom_y() }}
+	}
+	switch(FEAT_STATIONS, SELF, switch_buffer, rail_continuation & 3) {
+		0: return spriteset_buffer_all;
+		1: return spriteset_buffer_only_top;
+		2: return spriteset_buffer_only_bottom;
+		return spriteset_empty;
+	}
+{%- endmacro %}
