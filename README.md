@@ -1,11 +1,13 @@
 # Romanian Stations
 
-A NewGRF with romanian-inspired railway stations for OpenTTD.
+A NewGRF with nice Romania-inspired railway stations for OpenTTD.
 
 ## Features
 
 - Automatic line end buffers
-- Visible passengers
+- Visible passengers, depending on the station load, that can "move"
+- Single-sided platforms, that can be built in one go with alternating sides (this feature is enabled by default)
+- Station roofs of configurable colours (by default red, can be any of the company colours or the owning company's colour)
 
 ## How to build from source
 
@@ -15,7 +17,7 @@ Make sure you have installed:
 - [`nmlc`](https://github.com/OpenTTD/nml), the NML compiler, version 0.8.1 or newer (`pip install nml`)
 - [`jinja2`](https://pypi.org/project/jinja2-cli/), CLI for the Jinja2 template engine (`pip install jinja2-cli`)
 
-Run `make`, and the grf file `romanian-stations.grf` will be generated.
+Run `make`, and the grf file `romanian_stations.grf` will be generated.
 You can run `make install` to copy the file to the OpenTTD user NewGRF's directory (may require setting the `OPENTTD_USER_DIR` variable on other systems besides Linux).
 
 Some programs and flags can be overriden.

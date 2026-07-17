@@ -1,3 +1,0 @@
-<?php include_once 'asphalt.phpnml' ?>
-<?php include_once 'concrete_slabs.phpnml' ?>
-<?php include_once 'empty.phpnml' ?>

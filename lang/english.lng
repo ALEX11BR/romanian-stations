@@ -1,6 +1,6 @@
 ##grflangid 0x01
 STR_GRF_NAME :Romanian stations
-STR_GRF_DESCRIPTION :Set of nice Romania-inspired passenger railway stations.
+STR_GRF_DESCRIPTION :A NewGRF with nice Romania-inspired passenger railway stations.{}{SILVER}Features{}{BLACK}- Automatic line end buffers{}- Visible passengers, depending on the station load, that can "move"{}- Single-sided platforms, that can be built in one go with alternating sides (this feature is enabled by default){}- Station roofs of configurable colours (by default red, can be any of the company colours or the owning company's colour)
 
 STR_PARAM_METAL_ROOF_RECOLOR :Station roof colour
 STR_PARAM_METAL_ROOF_RECOLOR_DESC :Colour of the metallic station roofs. By default, the colour is set to the company colour.

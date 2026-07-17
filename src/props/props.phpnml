@@ -1,7 +1,0 @@
-<?php include_once 'poles.phpnml' ?>
-
-<?php include_once 'benches.phpnml' ?>
-<?php include_once 'metal_roofs.phpnml' ?>
-<?php include_once 'rail_fences.phpnml' ?>
-<?php include_once 'station_signs.phpnml' ?>
-<?php include_once 'underpasses.phpnml' ?>

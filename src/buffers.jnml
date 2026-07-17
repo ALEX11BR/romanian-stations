@@ -16,7 +16,9 @@
 	{{ template_grid(1, 5) }}
 {%- endmacro %}
 
-// For the buffers to work, the first custom spriteset must be the switch_buffer that is defined later in the file
+// For the buffers to work, the first custom spriteset of the stations must be `switch_buffer` which is defined later in the file.
+// Note that using `hide_sprite` with `rail_continuation` within the buildings messes up the purchase view.
+// This is why we always display the buffers, and select an empty image if necessary.
 {% macro buffers(axis) %}
 	{% if axis == 'X' %}
 		building {

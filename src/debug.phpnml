@@ -1,6 +1,0 @@
-spriteset(spriteset_debug, "img/things.png") {
-	template_grid_platform(1, 3, 0)
-	template_grid_platform(1, 4, 0)
-	template_grid_platform(1, 1, 0)
-	template_grid_platform(1, 2, 0)
-}

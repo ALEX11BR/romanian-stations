@@ -57,7 +57,7 @@
 	}
 {% endmacro %}
 
-{% macro concrete_slabs_platform(station_platform_side, platform_position, axis) %}
+{% macro platform_concrete_slabs(station_platform_side, platform_position, axis) %}
 	// Platform
 	building {
 		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_CONCRETE_SLABS_' + axis] }});
@@ -73,7 +73,7 @@
 	}
 {% endmacro %}
 
-{% macro high_asphalt_platform(station_platform_side, platform_position, axis) %}
+{% macro platform_high_asphalt(station_platform_side, platform_position, axis) %}
 	building {
 		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_HIGH_ASPHALT_' + platform_position + '_' + axis] }});
 		{{ use_default_palette() }}
@@ -96,8 +96,8 @@
 			spritelayout spritelayout_concrete_slabs_{{ station_platform_side }}_{{ axis }} {
 				{{ ground_rail(axis) }}
 				{{ buffers(axis) }}
-				{{ concrete_slabs_platform(station_platform_side, 'TOP', axis) }}
-				{{ concrete_slabs_platform(station_platform_side, 'BOTTOM', axis) }}
+				{{ platform_concrete_slabs(station_platform_side, 'TOP', axis) }}
+				{{ platform_concrete_slabs(station_platform_side, 'BOTTOM', axis) }}
 				{{ cargo_passengers(station_platform_side, 'TOP', axis, 1) }}
 				{{ cargo_passengers(station_platform_side, 'BOTTOM', axis, 1) }}
 
@@ -143,8 +143,8 @@
 					spritelayout spritelayout_{{ station_name }}_{{ axis }} {
 						{{ ground_rail(axis) }}
 						{{ buffers(axis) }}
-						{{ high_asphalt_platform(station_platform_side, 'TOP', axis) }}
-						{{ high_asphalt_platform(station_platform_side, 'BOTTOM', axis) }}
+						{{ platform_high_asphalt(station_platform_side, 'TOP', axis) }}
+						{{ platform_high_asphalt(station_platform_side, 'BOTTOM', axis) }}
 						{{ cargo_passengers(station_platform_side, 'TOP', axis, 3) }}
 						{{ cargo_passengers(station_platform_side, 'BOTTOM', axis, 3) }}
 						{% if central_furniture == '_UNDERPASS' %}
