@@ -1,9 +1,12 @@
 ##grflangid 0x01
+
+DEBUG :Debug
+
 STR_GRF_NAME :Romanian stations
-STR_GRF_DESCRIPTION :A NewGRF with nice Romania-inspired passenger railway stations.{}{SILVER}Features{}{BLACK}- Automatic line end buffers{}- Visible passengers, depending on the station load, that can "move"{}- Single-sided platforms, that can be built in one go with alternating sides (this feature is enabled by default){}- Station roofs of configurable colours (by default red, can be any of the company colours or the owning company's colour)
+STR_GRF_DESCRIPTION :{BLUE}Roman{YELLOW}ian st{RED}ations{}{BLACK}A NewGRF with nice Romania-inspired passenger railway stations.{}{SILVER}Features{}{BLACK}- Automatic line end buffers{}- Visible passengers, depending on the station load, that can "move"{}- Single-sided platforms, that can be built in one go with alternating sides (this feature is enabled by default){}- Station roofs of configurable colours (by default red, can be any of the company colours or the owning company's colour)
 
 STR_PARAM_METAL_ROOF_RECOLOR :Station roof colour
-STR_PARAM_METAL_ROOF_RECOLOR_DESC :Colour of the metallic station roofs. By default, the colour is set to the company colour.
+STR_PARAM_METAL_ROOF_RECOLOR_DESC :Colour of the metallic station roofs. By default, the colour is set to red.
 
 STR_PARAM_PLATFORM_ALTERNATE :Alternate platform sides of one-platform stations
 STR_PARAM_PLATFORM_ALTERNATE_DESC :If this setting is on, building one-platform stations will make the platform side (top or bottom) of the tiles to alternate through the tracks built in one go.
@@ -32,6 +35,16 @@ STR_STATION_NAME_EMPTY :Empty station
 STR_STATION_NAME_CONCRETE_SLABS_BOTH :Concrete slabs (Both platforms)
 STR_STATION_NAME_CONCRETE_SLABS_TOP :Concrete slabs (Top platform)
 STR_STATION_NAME_CONCRETE_SLABS_BOTTOM :Concrete slabs (Bottom platform)
+STR_STATION_NAME_CONCRETE_SLABS_CROSSING_BOTH :Concrete slabs level crossing (Both platforms)
+STR_STATION_NAME_CONCRETE_SLABS_CROSSING_TOP :Concrete slabs level crossing (Top platform)
+STR_STATION_NAME_CONCRETE_SLABS_CROSSING_BOTTOM :Concrete slabs level crossing (Bottom platform)
+
+STR_STATION_NAME_LOW_ASPHALT_BOTH :Low asphalt (Both platforms)
+STR_STATION_NAME_LOW_ASPHALT_TOP :Low asphalt (Top platform)
+STR_STATION_NAME_LOW_ASPHALT_BOTTOM :Low asphalt (Bottom platform)
+STR_STATION_NAME_LOW_ASPHALT_CROSSING_BOTH :Low asphalt level crossing (Both platforms)
+STR_STATION_NAME_LOW_ASPHALT_CROSSING_TOP :Low asphalt level crossing (Top platform)
+STR_STATION_NAME_LOW_ASPHALT_CROSSING_BOTTOM :Low asphalt level crossing (Bottom platform)
 
 STR_STATION_NAME_HIGH_ASPHALT_BOTH :High asphalt (Both platforms)
 STR_STATION_NAME_HIGH_ASPHALT_TOP :High asphalt (Top platform)
