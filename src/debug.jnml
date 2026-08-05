@@ -1,4 +1,5 @@
 {% from 'common.jnml' import template_grid, ground_rail, platform_offsets %}
+{% from 'badges.jnml' import init_badges %}
 
 grf {
 	grfid: "ap\00\00";
@@ -11,6 +12,8 @@ grf {
 cargotable {
 	PASS
 }
+
+{{ init_badges() }}
 
 {% for i in range(1, 17) %}
 spriteset(spriteset_debug_{{ i }}, "img/debug.png") {
@@ -54,6 +57,25 @@ item(FEAT_STATIONS, station_debug, 0) {
         name: string(DEBUG);
         cargo_random_triggers: [PASS];
         heights: [1, 1, 1, 1];
+        badges: ["benches/romanian"];
+    }
+    graphics {
+        sprite_layouts: [
+            spritelayout_debug_X,
+            spritelayout_debug_Y
+        ];
+        random_switch_debug;
+    }
+}
+
+item(FEAT_STATIONS, station_debug_2, 1) {
+    property {
+        class: "ap\00\00";
+        classname: string(DEBUG);
+        name: string(DEBUG);
+        cargo_random_triggers: [PASS];
+        heights: [1, 1, 1, 1];
+        //badges: ["benches/romanian"];
     }
     graphics {
         sprite_layouts: [

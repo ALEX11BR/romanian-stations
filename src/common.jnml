@@ -47,13 +47,15 @@
 	offset_y=none,
 	left_overflow=0,
 	right_overflow=0,
+	height=none,
+	width=none,
 	filename=''
 ) %}
 	[
 		{{ grid_x * GRID_X_SPACING - GRID_X_OFFSET - left_overflow }}, // topleft x
 		{{ grid_y * GRID_Y_SPACING - GRID_Y_OFFSET - ground_height }}, // topleft y
-		{{ IMAGE_WIDTH + left_overflow + right_overflow }}, // width
-		{{ IMAGE_HEIGHT + ground_height }}, // height
+		{{ IMAGE_WIDTH + left_overflow + right_overflow if width is none else width }}, // width
+		{{ IMAGE_HEIGHT + ground_height if height is none else height }}, // height
 		{{ offset_x - left_overflow }}, // x offset
 		// y offset
 		{%- if offset_y is none %}

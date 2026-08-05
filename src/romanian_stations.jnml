@@ -59,6 +59,9 @@ spriteset(spriteset_empty, "img/things.png") {
 	{%- endfor %}
 }
 
+{% from 'badges.jnml' import init_badges -%}
+{{ init_badges() }}
+
 {% from 'spriteset_things.jnml' import init_spriteset_things -%}
 {{ init_spriteset_things() }}
 
