@@ -74,6 +74,15 @@
 		{%- do THINGS_IDS.update({'POLES_Y': THINGS_IDS|length}) -%}
 		{{ template_grid(1, 2, 9, right_overflow=1) }}
 
+		{%- do THINGS_IDS.update({'INFO_PANEL_X': THINGS_IDS|length}) -%}
+		{{ template_grid(7, 1, 2) }}
+		{%- do THINGS_IDS.update({'INFO_PANEL_Y': THINGS_IDS|length}) -%}
+		{{ template_grid(7, 2, 2) }}
+		{%- do THINGS_IDS.update({'INFO_PANEL_TEXT_X': THINGS_IDS|length}) -%}
+		{{ template_grid(7, 3, 2, offset_x=0, offset_y=0) }}
+		{%- do THINGS_IDS.update({'INFO_PANEL_TEXT_Y': THINGS_IDS|length}) -%}
+		{{ template_grid(7, 4, 2, offset_x=0, offset_y=0) }}
+
 		{%- do THINGS_IDS.update({'METAL_ROOF_TOP_X': THINGS_IDS|length}) -%}
 		{{ template_grid(2, 1, 4) }}
 		{%- do THINGS_IDS.update({'METAL_ROOF_TOP_Y': THINGS_IDS|length}) -%}

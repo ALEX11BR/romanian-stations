@@ -48,15 +48,31 @@
 {% endmacro %}
 
 {% set POLES_HEIGHT = 8 %}
-{% macro prop_metal_roof(station_platform_side, platform_position, axis, platform_height) %}
-	// Poles
+
+{% macro prop_poles(station_platform_side, platform_position, axis, platform_height) %}
 	building {
 		sprite: spriteset_things({{ THINGS_IDS['POLES_' + axis] }});
 		{{ use_default_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
 		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
 	}
-	// Metal roof
+{% endmacro %}
+
+{% macro prop_info_panel(station_platform_side, platform_position, axis, platform_height) %}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['INFO_PANEL_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 2, platform_height + POLES_HEIGHT - 2, other_axis_extent=3, ) }}
+	}
+	childsprite {
+		sprite: spriteset_things({{ THINGS_IDS['INFO_PANEL_TEXT_' + axis] }});
+		{{ use_default_palette() }}
+		hide_sprite: pbs_reserved == 0;
+	}
+{% endmacro %}
+
+{% macro prop_metal_roof(station_platform_side, platform_position, axis, platform_height) %}
 	building {
 		sprite: spriteset_things({{ THINGS_IDS['METAL_ROOF_' + platform_position + '_' + axis] }});
 		{{ use_metal_roof_palette() }}
@@ -231,8 +247,9 @@
 
 	{% for (central_furniture, central_furniture_id) in [('', 0), ('_UNDERPASS', 16), ('_BENCH', 32)] %}
 		{% for (over_furniture, over_furniture_id) in [('', 0), ('_METAL_ROOF', 8)] %}
+		{% for (under_furniture, under_furniture_id) in [('', 0), ('_INFO_PANEL', 64)] %}
 			{% for station_platform_side, platforms_id in STATION_PLATFORM_SIDES %}
-				{% set station_name = 'HIGH_ASPHALT' + central_furniture + over_furniture + '_' + station_platform_side %}
+				{% set station_name = 'HIGH_ASPHALT' + central_furniture + over_furniture + under_furniture + '_' + station_platform_side %}
 
 				{% for axis in AXES %}
 					spritelayout spritelayout_{{ station_name }}_{{ axis }} {
@@ -249,6 +266,14 @@
 							{{ prop_bench(station_platform_side, 'TOP', axis, 3) }}
 							{{ prop_bench(station_platform_side, 'BOTTOM', axis, 3) }}
 						{% endif %}
+						{% if under_furniture == '_INFO_PANEL' or over_furniture == '_METAL_ROOF' %}
+							{{ prop_poles(station_platform_side, 'TOP', axis, 4) }}
+							{{ prop_poles(station_platform_side, 'BOTTOM', axis, 4) }}
+						{% endif %}
+						{% if under_furniture == '_INFO_PANEL' %}
+							{{ prop_info_panel(station_platform_side, 'TOP', axis, 4) }}
+							{{ prop_info_panel(station_platform_side, 'BOTTOM', axis, 4) }}
+						{% endif %}
 						{% if over_furniture == '_METAL_ROOF' %}
 							{{ prop_metal_roof(station_platform_side, 'TOP', axis, 4) }}
 							{{ prop_metal_roof(station_platform_side, 'BOTTOM', axis, 4) }}
@@ -256,7 +281,7 @@
 					}
 				{% endfor %}
 
-				item(FEAT_STATIONS, station_{{ station_name }}, {{ central_furniture_id + over_furniture_id + platforms_id + 4 }}) {
+				item(FEAT_STATIONS, station_{{ station_name }}, {{ central_furniture_id + over_furniture_id + under_furniture_id + platforms_id + 4 }}) {
 					property {
 						class: "ap\01\01";
 						classname: string(STR_CLASS_NAME_PASSENGERS);
@@ -283,6 +308,7 @@
 					}
 				}
 			{% endfor %}
+		{% endfor %}
 		{% endfor %}
 	{% endfor %}
 {% endmacro %}

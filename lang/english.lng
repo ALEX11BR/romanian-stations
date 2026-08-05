@@ -64,3 +64,21 @@ STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_BOTTOM :High asphalt (Bottom platform) w
 STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_BOTH :High asphalt (Both platforms) with underpass, metallic roof
 STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_TOP :High asphalt (Top platform) with underpass, metallic roof
 STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_BOTTOM :High asphalt (Bottom platform) with underpass, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel
+STR_STATION_NAME_HIGH_ASPHALT_INFO_PANEL_TOP :High asphalt (Top platform) with panel
+STR_STATION_NAME_HIGH_ASPHALT_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel
+STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_INFO_PANEL_TOP :High asphalt (Top platform) with panel, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, benches
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_INFO_PANEL_TOP :High asphalt (Top platform) with panel, benches
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, benches
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, benches, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_INFO_PANEL_TOP :High asphalt (Top platform) with panel, benches, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, benches, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, underpass
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_INFO_PANEL_TOP :High asphalt (Top platform) with panel, underpass
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, underpass
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, underpass, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_INFO_PANEL_TOP :High asphalt (Top platform) with panel, underpass, metallic roof
+STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, underpass, metallic roof
