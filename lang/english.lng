@@ -29,76 +29,45 @@ STR_PARAM_COLOUR_BROWN :Brown
 STR_PARAM_COLOUR_GREY :Grey
 STR_PARAM_COLOUR_WHITE :White
 
+
 STR_BADGE_BENCHES :Benches
 STR_BADGE_BENCHES_ROMANIAN :Romanian
+
 STR_BADGE_PLATFORM_CROSSING :Platform crossing
 STR_BADGE_PLATFORM_CROSSING_LEVEL :Level crossing
 STR_BADGE_PLATFORM_CROSSING_UNDERPASS :Underpass
+STR_BADGE_PLATFORM_CROSSING_OVERPASS :Overpass
+
 STR_BADGE_PLATFORM_SIDE :Platform side
 STR_BADGE_PLATFORM_SIDE_TOP :Top platform
 STR_BADGE_PLATFORM_SIDE_BOTTOM :Bottom platform
 STR_BADGE_PLATFORM_SIDE_BOTH :Both platforms
+
 STR_BADGE_PLATFORM_TYPE :Platform type
 STR_BADGE_PLATFORM_TYPE_CONCRETE_SLABS :Concrete slabs
 STR_BADGE_PLATFORM_TYPE_LOW_ASPHALT :Low asphalt
 STR_BADGE_PLATFORM_TYPE_HIGH_ASPHALT :High asphalt
+
 STR_BADGE_ROLE :Role
 STR_BADGE_ROLE_PASSENGER :Passengers
+
 STR_BADGE_ROOF :Roof
 STR_BADGE_ROOF_METAL :Metallic
+
 STR_BADGE_SCREEN :Info panel
 STR_BADGE_SCREEN_ROMANIAN :Romanian
 
-STR_CLASS_NAME_PASSENGERS :Romanian stations: Passenger stations
-STR_STATION_NAME_EMPTY :Empty station
 
-STR_STATION_NAME_CONCRETE_SLABS_BOTH :Concrete slabs (Both platforms)
-STR_STATION_NAME_CONCRETE_SLABS_TOP :Concrete slabs (Top platform)
-STR_STATION_NAME_CONCRETE_SLABS_BOTTOM :Concrete slabs (Bottom platform)
-STR_STATION_NAME_CONCRETE_SLABS_CROSSING_BOTH :Concrete slabs level crossing (Both platforms)
-STR_STATION_NAME_CONCRETE_SLABS_CROSSING_TOP :Concrete slabs level crossing (Top platform)
-STR_STATION_NAME_CONCRETE_SLABS_CROSSING_BOTTOM :Concrete slabs level crossing (Bottom platform)
+STR_CLASS_NAME_PASSENGER_PLATFORMS :Romanian stations: Passenger platforms
 
-STR_STATION_NAME_LOW_ASPHALT_BOTH :Low asphalt (Both platforms)
-STR_STATION_NAME_LOW_ASPHALT_TOP :Low asphalt (Top platform)
-STR_STATION_NAME_LOW_ASPHALT_BOTTOM :Low asphalt (Bottom platform)
-STR_STATION_NAME_LOW_ASPHALT_CROSSING_BOTH :Low asphalt level crossing (Both platforms)
-STR_STATION_NAME_LOW_ASPHALT_CROSSING_TOP :Low asphalt level crossing (Top platform)
-STR_STATION_NAME_LOW_ASPHALT_CROSSING_BOTTOM :Low asphalt level crossing (Bottom platform)
+STR_STATION_NAME_CONCRETE_SLABS_BOTH :Concrete slabs - Both platforms
+STR_STATION_NAME_CONCRETE_SLABS_TOP :Concrete slabs - Top platform
+STR_STATION_NAME_CONCRETE_SLABS_BOTTOM :Concrete slabs - Bottom platform
 
-STR_STATION_NAME_HIGH_ASPHALT_BOTH :High asphalt (Both platforms)
-STR_STATION_NAME_HIGH_ASPHALT_TOP :High asphalt (Top platform)
-STR_STATION_NAME_HIGH_ASPHALT_BOTTOM :High asphalt (Bottom platform)
-STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_BOTH :High asphalt (Both platforms) with metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_TOP :High asphalt (Top platform) with metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_BOTTOM :High asphalt (Bottom platform) with metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_BOTH :High asphalt (Both platforms) with benches
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_TOP :High asphalt (Top platform) with benches
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_BOTTOM :High asphalt (Bottom platform) with benches
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_BOTH :High asphalt (Both platforms) with benches, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_TOP :High asphalt (Top platform) with benches, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_BOTTOM :High asphalt (Bottom platform) with benches, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_BOTH :High asphalt (Both platforms) with underpass
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_TOP :High asphalt (Top platform) with underpass
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_BOTTOM :High asphalt (Bottom platform) with underpass
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_BOTH :High asphalt (Both platforms) with underpass, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_TOP :High asphalt (Top platform) with underpass, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_BOTTOM :High asphalt (Bottom platform) with underpass, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel
-STR_STATION_NAME_HIGH_ASPHALT_INFO_PANEL_TOP :High asphalt (Top platform) with panel
-STR_STATION_NAME_HIGH_ASPHALT_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel
-STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_INFO_PANEL_TOP :High asphalt (Top platform) with panel, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_METAL_ROOF_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, benches
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_INFO_PANEL_TOP :High asphalt (Top platform) with panel, benches
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, benches
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, benches, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_INFO_PANEL_TOP :High asphalt (Top platform) with panel, benches, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_BENCH_METAL_ROOF_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, benches, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, underpass
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_INFO_PANEL_TOP :High asphalt (Top platform) with panel, underpass
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, underpass
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_INFO_PANEL_BOTH :High asphalt (Both platforms) with panel, underpass, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_INFO_PANEL_TOP :High asphalt (Top platform) with panel, underpass, metallic roof
-STR_STATION_NAME_HIGH_ASPHALT_UNDERPASS_METAL_ROOF_INFO_PANEL_BOTTOM :High asphalt (Bottom platform) with panel, underpass, metallic roof
+STR_STATION_NAME_LOW_ASPHALT_BOTH :Low asphalt - Both platforms
+STR_STATION_NAME_LOW_ASPHALT_TOP :Low asphalt - Top platform
+STR_STATION_NAME_LOW_ASPHALT_BOTTOM :Low asphalt - Bottom platform
+
+STR_STATION_NAME_HIGH_ASPHALT_BOTH :High asphalt - Both platforms
+STR_STATION_NAME_HIGH_ASPHALT_TOP :High asphalt - Top platform
+STR_STATION_NAME_HIGH_ASPHALT_BOTTOM :High asphalt - Bottom platform

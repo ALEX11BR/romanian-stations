@@ -1,0 +1,185 @@
+{% from 'cargo.jnml' import PASSENGERS_HEIGHT %}
+{% from 'common.jnml' import platform_offsets, use_default_palette, use_metal_roof_palette, hide_sprite_building %}
+{% from 'spriteset_things.jnml' import THINGS_IDS %}
+
+// Props are the various elements that make up the station, such as platforms, benches, etc.
+// Buffers are a special case, as unlike the other props, their sprites don't belong to spriteset_things.
+
+{% set POLES_HEIGHT = 8 %}
+
+// Most props' functions accept the following parameters:
+// - station_platform_side: The side the station's platform is on (TOP, BOTTOM, or BOTH).
+// - platform_position: The platform the prop is on (TOP or BOTTOM). Usually in a layout the prop function will be called with both values, to account for the platform side alternation feature.
+// - axis: The axis the station is on (X or Y).
+// - platform_height: The height of the platform the prop is on. This usually translates to the zoffset of the prop.
+
+{% macro prop_fence(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['BLACK_YELLOW_FENCE_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building('BOTTOM' if station_platform_side == 'TOP' else 'TOP', platform_position) }}
+		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
+	}
+{% endmacro %}
+
+{% macro prop_station_sign(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['STATION_SIGN_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
+	}
+{% endmacro %}
+
+{% macro prop_bench(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['BENCH_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, PASSENGERS_HEIGHT + (1 if platform_position == 'BOTTOM' else -1), platform_height) }}
+	}
+{% endmacro %}
+
+{% macro prop_underpass(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['UNDERPASS_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, PASSENGERS_HEIGHT + (1 if platform_position == 'BOTTOM' else -1), platform_height) }}
+	}
+{% endmacro %}
+
+{% macro prop_crossing(axis) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['CROSSING_' + axis] }});
+		{{ use_default_palette() }}
+		{{ platform_offsets('TOP', 'X', 0, 0, other_axis_extent=16) }}
+	}
+{% endmacro %}
+
+{% set POLES_HEIGHT = 8 %}
+
+{% macro prop_poles(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['POLES_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
+	}
+{% endmacro %}
+
+{% macro prop_info_panel(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['INFO_PANEL_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 2, platform_height + POLES_HEIGHT, other_axis_extent=3) }}
+	}
+	childsprite {
+		sprite: spriteset_things({{ THINGS_IDS['INFO_PANEL_TEXT_' + axis] }});
+		{{ use_default_palette() }}
+		hide_sprite: pbs_reserved == 0;
+	}
+{% endmacro %}
+
+{% macro prop_metal_roof(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['METAL_ROOF_' + platform_position + '_' + axis] }});
+		{{ use_metal_roof_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 6, platform_height + POLES_HEIGHT) }}
+	}
+{% endmacro %}
+
+{% macro prop_overpass_stairs(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['OVERPASS_STAIRS_' + (platform_height|string) + '_' + platform_position + '_' + axis] }});
+		{{ use_metal_roof_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 21, 0) }}
+	}
+{% endmacro %}
+
+{% macro prop_overpass_poles(station_platform_side, platform_position, axis, platform_height) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['OVERPASS_POLES_' + (platform_height|string) + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
+	}
+{% endmacro %}
+
+{% macro prop_pack_overpass_poles(station_platform_side, axis, platform_height) -%}
+	{{ prop_overpass_poles(station_platform_side, 'TOP', axis, platform_height) }}
+	{{ prop_overpass_poles(station_platform_side, 'BOTTOM', axis, platform_height) }}
+	{% if station_platform_side != 'BOTH' -%}
+		{% set other_side = 'TOP' if station_platform_side == 'BOTTOM' else 'BOTTOM' -%}
+		{{ prop_overpass_poles(other_side, 'TOP', axis, 0) }}
+		{{ prop_overpass_poles(other_side, 'BOTTOM', axis, 0) }}
+	{% endif -%}
+{% endmacro %}
+
+{% macro prop_overpass(station_platform_side, platform_position, axis, platform_height) -%}
+	{% set other_axis = 'X' if axis == 'Y' else 'Y' -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['OVERPASS_' + ('FOR_TOP_STAIRS_' if platform_position == 'TOP' else '') + axis] }});
+		{{ use_metal_roof_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+
+		{{ axis|lower }}offset: 6;
+		{{ other_axis|lower }}offset: 0;
+		zoffset: 13;
+		{{ axis|lower }}extent: 4;
+		{{ other_axis|lower }}extent: 10;
+		zextent: 8;
+	}
+{% endmacro %}
+
+{% macro platform_concrete_slabs(station_platform_side, platform_position, axis, modifier='') -%}
+	// Platform
+	building {
+		{% if modifier == '' -%}
+			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_CONCRETE_SLABS_' + axis] }});
+		{% else -%}
+			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_CONCRETE_SLABS_CROSSING_' + platform_position + '_' + axis] }});
+		{% endif -%}
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 1, 0) }}
+	}
+	// Platform overlay for continuous platforms (in a way more convenient than using a switch for the platform sprite)
+	childsprite {
+		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_CONCRETE_SLABS_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0;
+	}
+{% endmacro %}
+
+{% macro platform_low_asphalt(station_platform_side, platform_position, axis, modifier='') -%}
+	// Platform
+	building {
+		{% if modifier == '' -%}
+			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_LOW_ASPHALT_' + axis] }});
+		{% else -%}
+			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_LOW_ASPHALT_CROSSING_' + platform_position + '_' + axis] }});
+		{% endif -%}
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 1, 0) }}
+	}
+	// Platform overlay for continuous platforms (in a way more convenient than using a switch for the platform sprite)
+	childsprite {
+		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_LOW_ASPHALT_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0;
+	}
+{% endmacro %}
+
+{% macro platform_high_asphalt(station_platform_side, platform_position, axis) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_HIGH_ASPHALT_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 3, 0) }}
+	}
+{% endmacro %}

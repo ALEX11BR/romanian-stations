@@ -85,3 +85,29 @@ item(FEAT_STATIONS, station_debug_2, 1) {
         random_switch_debug;
     }
 }
+
+	{% for platform_type, platform_height, platform_type_id in [
+		('CONCRETE_SLABS', 1, 0),
+		('LOW_ASPHALT', 1, 128),
+		('HIGH_ASPHALT', 3, 128 + 256)
+	] -%}
+
+	{% for platform_prop, platform_prop_height_restriction, platform_prop_id in [
+		('', 0, 0),
+		('_BENCH', 1, 16),
+		('_CROSSING', 3, 32),
+		('_UNDERPASS', 1, 48),
+		('_OVERPASS', 0, 64),
+	] if platform_prop_height_restriction != platform_height -%}
+
+	{% for high_prop, high_prop_id in [
+		('', 0),
+		('_INFO_PANEL', 8),
+	] if high_prop == '' or platform_type != 'CONCRETE_SLABS' -%}
+
+	{% for roof_prop, roof_prop_id in [
+		('', 0),
+		('_METAL_ROOF', 4),
+	] if roof_prop == '' or platform_height == 3 -%}
+
+	{% for station_platform_side, platforms_id in STATION_PLATFORM_SIDES -%}

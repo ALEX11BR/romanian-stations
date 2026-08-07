@@ -1,36 +1,36 @@
 {% set AXES = ['X', 'Y'] %}
 {% set STATION_PLATFORM_SIDES = [('BOTH', 3), ('TOP', 1), ('BOTTOM', 2)] %}
 
-{% macro platform_offsets(platform_position, axis, height, z_offset, other_axis_extent=5) %}
+{% macro platform_offsets(platform_position, axis, height, z_offset, other_axis_extent=5) -%}
 	xoffset: {{ 16 - other_axis_extent if axis == 'Y' and platform_position == 'BOTTOM' else 0 }};
 	yoffset: {{ 16 - other_axis_extent if axis == 'X' and platform_position == 'BOTTOM' else 0 }};
 	zoffset: {{ z_offset }};
-	{% if axis == 'X' %}
+	{% if axis == 'X' -%}
 		xextent: 16;
 		yextent: {{ other_axis_extent }};
-	{% else %}
+	{% else -%}
 		xextent: {{ other_axis_extent }};
 		yextent: 16;
-	{% endif %}
+	{% endif -%}
 	zextent: {{ height }};
-{%- endmacro %}
+{% endmacro %}
 
-{% macro use_default_palette() %}
+{% macro use_default_palette() -%}
 	recolour_mode: RECOLOUR_REMAP;
 	palette: PALETTE_USE_DEFAULT;
-{%- endmacro %}
-{% macro use_metal_roof_palette() %}
+{% endmacro %}
+{% macro use_metal_roof_palette() -%}
 	recolour_mode: RECOLOUR_REMAP;
 	palette: palette_1cc(
 		param_metal_roof_recolour == 16 ? company_colour1 : param_metal_roof_recolour
 	);
-{%- endmacro %}
+{% endmacro %}
 
-{% macro ground_rail(axis) %}
+{% macro ground_rail(axis) -%}
 	ground {
 		sprite: GROUNDSPRITE_RAIL_{{ axis }};
 	}
-{%- endmacro %}
+{% endmacro %}
 
 // Here x and y are the image axes
 {% set GRID_X_SPACING = 70 %}
@@ -50,7 +50,7 @@
 	height=none,
 	width=none,
 	filename=''
-) %}
+) -%}
 	[
 		{{ grid_x * GRID_X_SPACING - GRID_X_OFFSET - left_overflow }}, // topleft x
 		{{ grid_y * GRID_Y_SPACING - GRID_Y_OFFSET - ground_height }}, // topleft y
@@ -58,30 +58,30 @@
 		{{ IMAGE_HEIGHT + ground_height if height is none else height }}, // height
 		{{ offset_x - left_overflow }}, // x offset
 		// y offset
-		{%- if offset_y is none %}
+		{% if offset_y is none -%}
 			{{ -ground_height }},
-		{% else %}
+		{% else -%}
 			{{ offset_y }},
 		{% endif -%}
 		CROP, // flags
-		{%- if filename %}
+		{% if filename -%}
 			"{{filename}}" // filename
-		{% endif %}
+		{% endif -%}
 	]
-{%- endmacro %}
+{% endmacro %}
 
 // Our single-sided platform stations have the 2nd tile_type bit set to whether the side the platform is displayed should be swapped
 // For whatever reason, in the purchase view, the 2nd tile_type bit seems to be 1, so KEEP_TILE_TYPE has to reflect that
 {% set KEEP_TILE_TYPE = 2 -%}
 {% set ALTERNATE_TILE_TYPE = 0 -%}
-{% macro hide_sprite_building(station_platform_side, platform_position) %}
+{% macro hide_sprite_building(station_platform_side, platform_position) -%}
 	{% if station_platform_side != 'BOTH' %}
 		hide_sprite: (tile_type & 2) != {{ KEEP_TILE_TYPE if station_platform_side == platform_position else ALTERNATE_TILE_TYPE }};
 	{% endif %}
-{%- endmacro %}
-{% macro init_hide_sprite_building_logic() %}
+{% endmacro %}
+{% macro init_hide_sprite_building_logic() -%}
     switch(FEAT_STATIONS, SELF, switch_tile_type, getbits(extra_callback_info1, 8, 1) & param_platform_alternate) {
         0: return {{ KEEP_TILE_TYPE }};
         1: return {{ ALTERNATE_TILE_TYPE }};
     }
-{%- endmacro %}
+{% endmacro %}
