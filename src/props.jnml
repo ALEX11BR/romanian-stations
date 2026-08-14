@@ -1,5 +1,5 @@
 {% from 'cargo.jnml' import PASSENGERS_HEIGHT %}
-{% from 'common.jnml' import platform_offsets, use_default_palette, use_metal_roof_palette, hide_sprite_building %}
+{% from 'common.jnml' import platform_offsets, use_default_palette, use_metal_roof_palette, hide_sprite_building, template_grid %}
 {% from 'spriteset_things.jnml' import THINGS_IDS %}
 
 // Props are the various elements that make up the station, such as platforms, benches, etc.
@@ -164,42 +164,52 @@
 {% macro platform_concrete_slabs(station_platform_side, platform_position, axis, modifier='') -%}
 	// Platform
 	building {
+		{#
 		{% if modifier == '' -%}
 			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_CONCRETE_SLABS_' + axis] }});
 		{% else -%}
 			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_CONCRETE_SLABS_CROSSING_' + platform_position + '_' + axis] }});
 		{% endif -%}
+		#}
+		sprite: CUSTOM({{ 1 if platform_position == 'TOP' else 2 }}, {{ 0 if axis == 'X' else 2 }});
 		{{ use_default_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
 		{{ platform_offsets(platform_position, axis, 1, 0) }}
 	}
+	{#
 	// Platform overlay for continuous platforms (in a way more convenient than using a switch for the platform sprite)
 	childsprite {
 		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_CONCRETE_SLABS_' + platform_position + '_' + axis] }});
 		{{ use_default_palette() }}
 		hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0 || nearby_tile_perpendicular(0, {{ '-1' if platform_position == 'TOP' else '1' }}) == 1;
 	}
+	#}
 {% endmacro %}
 
 {% macro platform_low_asphalt(station_platform_side, platform_position, axis, modifier='') -%}
 	// Platform
 	building {
+		{#
 		{% if modifier == '' -%}
 			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_LOW_ASPHALT_' + axis] }});
 		{% else -%}
 			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_LOW_ASPHALT_CROSSING_' + platform_position + '_' + axis] }});
 		{% endif -%}
+		#}
+		sprite: CUSTOM({{ 1 if platform_position == 'TOP' else 2 }}, {{ 0 if axis == 'X' else 2 }});
 		{{ use_default_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
 		{{ platform_offsets(platform_position, axis, 1, 0) }}
 	}
+	{#
 	// Platform overlay for continuous platforms (in a way more convenient than using a switch for the platform sprite)
 	childsprite {
-		sprite: CUSTOM(1, {{ (2 if platform_position == 'TOP' else 0) + (1 if axis == 'Y' else 0)}});
+		sprite: CUSTOM(1, {{ 1 + (2 if platform_position == 'TOP' else 0) + (1 if axis == 'Y' else 0)}});
 		// sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_LOW_ASPHALT_' + platform_position + '_' + axis] }});
 		{{ use_default_palette() }}
 		// hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0;
 	}
+	#}
 {% endmacro %}
 
 {% macro platform_high_asphalt(station_platform_side, platform_position, axis) -%}
@@ -218,4 +228,67 @@
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
 		{{ platform_offsets(platform_position, axis, 3, 0) }}
 	}
+{% endmacro %}
+
+// Initially, I used childsprites that overrode the edge stripes of the low platforms, but using `nearby_tile_perpendicular` in the `hide_sprite` logic of the childsprites messes up the purchase view.
+// So we have to use switches instead.
+// Some odd phenomena occur with the X axis platforms that make them use a different index in the spriteset than the specified one
+// (probably related to the issue that made me use only Y-oriented passengers for the full tile stations)
+// I decided to make different sprites for every possible platform position and crossing presence, with no childsprites.
+// (realized too late the switches solution below could theoretically work with childsprites as well)
+
+// The spritesets have the indeces:
+// 0, 1: The X sprite
+// 2: The Y sprite
+{% macro switches_low_platforms(platform_type, image_row, image_path) -%}
+	{% for platform_side in ['TOP', 'BOTTOM'] -%}
+	{% for modifier in ['', '_CROSSING'] -%}
+		{% set platform_name = 'platform_' + platform_type + '_' + platform_side + modifier -%}
+
+		spriteset(spriteset_{{ platform_name }}_end, "{{ image_path }}") {
+			{{ template_grid(
+				image_row + (2 if modifier == '_CROSSING' else 0),
+				1,
+				1,
+			) }}
+			{{ template_grid(
+				image_row + (2 if modifier == '_CROSSING' else 0),
+				1,
+				1,
+			) }}
+			{{ template_grid(
+				image_row + (2 if modifier == '_CROSSING' else 0),
+				2 + (2 if modifier == '_CROSSING' and platform_side == 'BOTTOM' else 0),
+				1,
+			) }}
+		}
+		spriteset(spriteset_{{ platform_name }}_continuous, "{{ image_path }}") {
+			{{ template_grid(
+				image_row + 1 + (2 if modifier == '_CROSSING' else 0),
+				1 + (2 if platform_side == 'BOTTOM' else 0),
+				1,
+			) }}
+			{{ template_grid(
+				image_row + 1 + (2 if modifier == '_CROSSING' else 0),
+				1 + (2 if platform_side == 'BOTTOM' else 0),
+				1,
+			) }}
+			{{ template_grid(
+				image_row + 1 + (2 if modifier == '_CROSSING' else 0),
+				2 + (2 if platform_side == 'BOTTOM' else 0),
+				1,
+			) }}
+		}
+
+		switch(
+			FEAT_STATIONS,
+			SELF,
+			switch_{{ platform_name }},
+			(platform_number_from_{{ 'start' if platform_side == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0) || nearby_tile_perpendicular(0, {{ '-1' if platform_side == 'TOP' else '1' }}) == 1,
+		) {
+			0: return spriteset_{{ platform_name }}_continuous;
+			return spriteset_{{ platform_name }}_end;
+		}
+	{% endfor -%}
+	{% endfor -%}
 {% endmacro %}

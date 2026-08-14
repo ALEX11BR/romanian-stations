@@ -1,7 +1,7 @@
 {% from 'buffers.jnml' import empty_template, buffers %}
 {% from 'cargo.jnml' import cargo_passengers %}
 {% from 'common.jnml' import AXES, STATION_PLATFORM_SIDES, use_default_palette, use_metal_roof_palette, ground_rail, ground, template_grid %}
-{% from 'props.jnml' import prop_fence, prop_station_sign, prop_bench, prop_underpass, prop_crossing, prop_poles, prop_info_panel, prop_metal_roof, prop_overpass_stairs, prop_overpass_poles, prop_pack_overpass_poles, prop_pack_overpass, platform_concrete_slabs, platform_low_asphalt, platform_high_asphalt, platform_high_asphalt_trackless %}
+{% from 'props.jnml' import prop_fence, prop_station_sign, prop_bench, prop_underpass, prop_crossing, prop_poles, prop_info_panel, prop_metal_roof, prop_overpass_stairs, prop_overpass_poles, prop_pack_overpass_poles, prop_pack_overpass, platform_concrete_slabs, platform_low_asphalt, platform_high_asphalt, platform_high_asphalt_trackless, switches_low_platforms %}
 {% from 'spriteset_things.jnml' import THINGS_IDS %}
 
 
@@ -22,58 +22,15 @@
 // 1 and 2 unset => waypoints (or buildings if trackless)
 
 
-// Using `nearby_tile_perpendicular` in the `hide_sprite` logic of the childsprites messes up the purchase view, so we use a switch to select the correct spriteset instead.
-
-// In these spritesets:
-// 0 = bottom edge overlay, track across X
-// 1 = bottom edge overlay, track across Y
-// 2 = top edge overlay, track across X
-// 3 = top edge overlay, track across Y
-{% macro overlay_spritesets(row, image_path, name) -%}
-	{% for i in range(4) -%}
-		spriteset(spriteset_overlay_{{ name }}_{{ i }}, "{{ image_path }}") {
-			{% if i % 2 == 1 -%}
-				{{ empty_template() }}
-				{{ empty_template() }}
-			{% else -%}
-				{{ template_grid(row, 1, 1, offset_x=0, offset_y=0) }}
-				{{ template_grid(row, 2, 1, offset_x=0, offset_y=0) }}
-			{% endif -%}
-			{% if i >= 2 -%}
-				{{ empty_template() }}
-				{{ empty_template() }}
-			{% else -%}
-				{{ template_grid(row, 3, 1, offset_x=0, offset_y=0) }}
-				{{ template_grid(row, 4, 1, offset_x=0, offset_y=0) }}
-			{% endif -%}
-		}
-	{% endfor %}
-{% endmacro %}
-
 {% macro init_passenger_platform_stations() %}
-	{{ overlay_spritesets(4, "img/asphalt_platforms.png", 'LOW_ASPHALT') }}
-	{{ overlay_spritesets(2, "img/concrete_slab_platforms.png", 'CONCRETE_SLABS') }}
+	{{ switches_low_platforms('CONCRETE_SLABS', 1, 'img/concrete_slab_platforms.png') }}
+	{{ switches_low_platforms('LOW_ASPHALT', 3, 'img/asphalt_platforms.png') }}
 
 	{% for platform_type, platform_height, platform_type_id in [
 		('CONCRETE_SLABS', 1, 0),
 		('LOW_ASPHALT', 1, 128),
 		('HIGH_ASPHALT', 3, 128 + 256)
 	] -%}
-
-	{% if platform_height == 1 -%}
-		// A bit is set => the corresponding edge must have no overlay
-		switch(
-			FEAT_STATIONS,
-			SELF,
-			switch_overlay_{{ platform_type }},
-			(platform_number_from_start(PLATFORM_SAME_STATION) == 0 || nearby_tile_perpendicular(0, -1) == 1) * 2 + (platform_number_from_end(PLATFORM_SAME_STATION) == 0 || nearby_tile_perpendicular(0, 1) == 1)
-		) {
-			0: return spriteset_overlay_{{ platform_type }}_0;
-			1: return spriteset_overlay_{{ platform_type }}_1;
-			2: return spriteset_overlay_{{ platform_type }}_2;
-			return spriteset_overlay_{{ platform_type }}_3;
-		}
-	{% endif -%}
 
 	{% if platform_type != 'CONCRETE_SLABS' -%}
 		{% for stair_type, stair_type_id in [
@@ -156,7 +113,6 @@
 					spritelayout_{{ station_name }}_X,
 					spritelayout_{{ station_name }}_Y,
 				];
-				//custom_spritesets: [switch_buffer];
 
 				random_switch_passengers_{{ '2' if stair_type != '' else '3' }};
 			}
@@ -335,7 +291,8 @@
 				custom_spritesets: [
 					switch_buffer,
 					{% if platform_height == 1 -%}
-						switch_overlay_{{ platform_type }},
+						switch_platform_{{ platform_type }}_TOP{{ '_CROSSING' if platform_prop == '_CROSSING' else ''}},
+						switch_platform_{{ platform_type }}_BOTTOM{{ '_CROSSING' if platform_prop == '_CROSSING' else ''}},
 					{% endif -%}
 				];
 
