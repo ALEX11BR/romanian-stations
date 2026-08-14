@@ -31,7 +31,7 @@
 		}
 	{% endfor %}
 
-	{% for platforms_per_tile in range(1, 3) %}
+	{% for platforms_per_tile in range(1, 4) %}
 		{% for seed in range(16) %}
 			switch(
 				FEAT_STATIONS,
@@ -56,7 +56,7 @@
 			FEAT_STATIONS,
 			TILE,
 			random_switch_passengers_{{ platforms_per_tile }},
-			TRIGGER_ALL_NEEDED
+			TRIGGER_ALL_NEEDED,
 		) {
 			{% for seed in range(16) %}
 				1: switch_passengers_{{ platforms_per_tile }}_{{ seed }};

@@ -1,7 +1,9 @@
-{% from 'buffers.jnml' import buffers %}
+{% from 'buffers.jnml' import empty_template, buffers %}
 {% from 'cargo.jnml' import cargo_passengers %}
-{% from 'common.jnml' import AXES, STATION_PLATFORM_SIDES, ground_rail %}
-{% from 'props.jnml' import prop_bench, prop_underpass, prop_crossing, prop_poles, prop_info_panel, prop_metal_roof, prop_overpass_stairs, prop_pack_overpass_poles, prop_overpass, platform_concrete_slabs, platform_low_asphalt, platform_high_asphalt %}
+{% from 'common.jnml' import AXES, STATION_PLATFORM_SIDES, use_default_palette, use_metal_roof_palette, ground_rail, ground, template_grid %}
+{% from 'props.jnml' import prop_fence, prop_station_sign, prop_bench, prop_underpass, prop_crossing, prop_poles, prop_info_panel, prop_metal_roof, prop_overpass_stairs, prop_overpass_poles, prop_pack_overpass_poles, prop_pack_overpass, platform_concrete_slabs, platform_low_asphalt, platform_high_asphalt, platform_high_asphalt_trackless %}
+{% from 'spriteset_things.jnml' import THINGS_IDS %}
+
 
 // NB: Place props in the order they should be drawn, from back to front - for the purchase display.
 
@@ -12,43 +14,202 @@
 // 4: Info panel
 // 5-7: Platform-level props
 // 8-9: Platform material
+// 10: Fence
+// 11-15: Reserved for future use
+// 16: Trackless
+
+// 1 and 2 set => Both platforms (or full tile if trackless)
+// 1 and 2 unset => waypoints (or buildings if trackless)
+
+
+// Using `nearby_tile_perpendicular` in the `hide_sprite` logic of the childsprites messes up the purchase view, so we use a switch to select the correct spriteset instead.
+
+// In these spritesets:
+// 0 = bottom edge overlay, track across X
+// 1 = bottom edge overlay, track across Y
+// 2 = top edge overlay, track across X
+// 3 = top edge overlay, track across Y
+{% macro overlay_spritesets(row, image_path, name) -%}
+	{% for i in range(4) -%}
+		spriteset(spriteset_overlay_{{ name }}_{{ i }}, "{{ image_path }}") {
+			{% if i % 2 == 1 -%}
+				{{ empty_template() }}
+				{{ empty_template() }}
+			{% else -%}
+				{{ template_grid(row, 1, 1, offset_x=0, offset_y=0) }}
+				{{ template_grid(row, 2, 1, offset_x=0, offset_y=0) }}
+			{% endif -%}
+			{% if i >= 2 -%}
+				{{ empty_template() }}
+				{{ empty_template() }}
+			{% else -%}
+				{{ template_grid(row, 3, 1, offset_x=0, offset_y=0) }}
+				{{ template_grid(row, 4, 1, offset_x=0, offset_y=0) }}
+			{% endif -%}
+		}
+	{% endfor %}
+{% endmacro %}
 
 {% macro init_passenger_platform_stations() %}
+	{{ overlay_spritesets(4, "img/asphalt_platforms.png", 'LOW_ASPHALT') }}
+	{{ overlay_spritesets(2, "img/concrete_slab_platforms.png", 'CONCRETE_SLABS') }}
+
 	{% for platform_type, platform_height, platform_type_id in [
 		('CONCRETE_SLABS', 1, 0),
 		('LOW_ASPHALT', 1, 128),
 		('HIGH_ASPHALT', 3, 128 + 256)
 	] -%}
 
+	{% if platform_height == 1 -%}
+		// A bit is set => the corresponding edge must have no overlay
+		switch(
+			FEAT_STATIONS,
+			SELF,
+			switch_overlay_{{ platform_type }},
+			(platform_number_from_start(PLATFORM_SAME_STATION) == 0 || nearby_tile_perpendicular(0, -1) == 1) * 2 + (platform_number_from_end(PLATFORM_SAME_STATION) == 0 || nearby_tile_perpendicular(0, 1) == 1)
+		) {
+			0: return spriteset_overlay_{{ platform_type }}_0;
+			1: return spriteset_overlay_{{ platform_type }}_1;
+			2: return spriteset_overlay_{{ platform_type }}_2;
+			return spriteset_overlay_{{ platform_type }}_3;
+		}
+	{% endif -%}
+
+	{% if platform_type != 'CONCRETE_SLABS' -%}
+		{% for stair_type, stair_type_id in [
+			('', 0),
+			('_FINAL_TOP_', 64 + 16),
+			('_FINAL_BOTTOM_', 64 + 32),
+		] -%}
+
+		{% set station_name = platform_type + stair_type + 'FULL' -%}
+		{% set station_id = platform_type_id + stair_type_id + 32768 + 3 -%}
+
+		{% for axis in AXES -%}
+		spritelayout spritelayout_{{ station_name }}_{{ axis}} {
+			{{ ground() }}
+
+			building {
+				sprite: spriteset_things({{ THINGS_IDS['PLATFORM_FULL_' + platform_type] }});
+				{{ use_default_palette() }}
+				xoffset: 0;
+				yoffset: 0;
+				zoffset: 0;
+				xextent: 16;
+				yextent: 16;
+				zextent: {{ platform_height }};
+			}
+			{% if stair_type != '' -%}
+				{{ prop_overpass_poles('BOTH', 'TOP' if '_TOP_' in stair_type else 'BOTTOM', axis, platform_height) }}
+				building {
+					sprite: spriteset_things({{ THINGS_IDS['OVERPASS_STAIRS_' + (platform_height|string) + stair_type + axis] }});
+					{{ use_metal_roof_palette() }}
+					xoffset: 0;
+					yoffset: 0;
+					zoffset: 0;
+					xextent: 16;
+					yextent: 16;
+					zextent: 21;
+				}
+			{% endif -%}
+
+			// We risk getting into some glitches if we don't display the passengers going across the Y axis
+			{% for main_offset in [0, 6, 11] if (main_offset != 6 or axis != 'X' or stair_type == '') and (axis != 'Y' or ((main_offset != 0 or stair_type != '_FINAL_TOP_') and (main_offset != 11 or stair_type != '_FINAL_BOTTOM_'))) -%}
+			building {
+				sprite: DEFAULT(1);
+				{{ use_default_palette() }}
+				xoffset: {{ main_offset }};
+				yoffset: 0;
+				zoffset: {{ platform_height }};
+				xextent: 5;
+				yextent: 16;
+				zextent: 8;
+			}
+			{% endfor -%}
+		}
+		{% endfor -%}
+
+		item(FEAT_STATIONS, station_{{ station_name }}, {{ station_id }}) {
+			property {
+				class: "ROPQ";
+				classname: string(STR_CLASS_NAME_PASSENGER_PLATFORMS_TRACKLESS);
+				name: string(STR_STATION_NAME_{{ platform_type }}_FULL);
+				cargo_random_triggers: [PASS];
+				tile_flags: [bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE)];
+				{% if stair_type != '' -%}
+					heights: [3, 3, 3, 3];
+				{% else -%}
+					heights: [1, 1, 1, 1];
+				{% endif -%}
+				badges: [
+					"flag/RO",
+					"region/europe/eastern",
+					"role/passenger",
+					"platform_type/{{ platform_type|lower }}",
+					{% if stair_type != '' -%}
+						"platform_crossing/overpass",
+					{% endif -%}
+				];
+			}
+			graphics {
+				sprite_layouts: [
+					spritelayout_{{ station_name }}_X,
+					spritelayout_{{ station_name }}_Y,
+				];
+				//custom_spritesets: [switch_buffer];
+
+				random_switch_passengers_{{ '2' if stair_type != '' else '3' }};
+			}
+		}
+		{% endfor -%}
+	{% endif -%}
+
 	{% for platform_prop, platform_prop_height_restriction, platform_prop_id in [
 		('', 0, 0),
 		('_BENCH', 1, 16),
+		('_SIGN', 0, 64),
 		('_CROSSING', 3, 32),
 		('_UNDERPASS', 1, 48),
-		('_OVERPASS', 0, 64),
+		('_OVERPASS_STAIRS', -1, 64 + 32),
+		('_OVERPASS', -1, 64 + 48),
+		('_STAIRS', -1, 64 + 16),
 	] if platform_prop_height_restriction != platform_height -%}
 
 	{% for high_prop, high_prop_id in [
 		('', 0),
 		('_INFO_PANEL', 8),
-	] if high_prop == '' or (platform_height == 3 and platform_prop != '_OVERPASS') -%}
+	] if high_prop == '' or (platform_type != 'CONCRETE_SLABS' and platform_prop_height_restriction != -1) -%}
 
 	{% for roof_prop, roof_prop_id in [
 		('', 0),
 		('_METAL_ROOF', 4),
-	] if roof_prop == '' or (platform_height == 3 and platform_prop != '_OVERPASS') -%}
+	] if roof_prop == '' or (platform_type != 'CONCRETE_SLABS' and platform_prop_height_restriction != -1) -%}
 
-	{% for station_platform_side, platforms_id in STATION_PLATFORM_SIDES -%}
+	{% for fence_prop, fence_prop_id in [
+		('', 0),
+		('_FENCE', 512),
+	] if fence_prop == '' or (platform_type != 'CONCRETE_SLABS' and platform_prop != '_CROSSING') -%}
 
-		{% set station_name = platform_type + platform_prop + high_prop + roof_prop + '_' + station_platform_side -%}
-		{% set station_id = platform_type_id + platform_prop_id + high_prop_id + roof_prop_id + platforms_id -%}
+	{% for track_type, track_type_id in [
+		('', 0),
+		('_TRACKLESS', 32768)
+	] if track_type == '' or (fence_prop == '' and platform_prop != '_CROSSING') -%}
+
+	{% for station_platform_side, platforms_id in STATION_PLATFORM_SIDES if station_platform_side != 'BOTH' or (fence_prop == '' and track_type == '') -%}
+
+		{% set station_name = platform_type + platform_prop + high_prop + roof_prop + fence_prop + track_type + '_' + station_platform_side -%}
+		{% set station_id = platform_type_id + platform_prop_id + high_prop_id + roof_prop_id + fence_prop_id + track_type_id + platforms_id -%}
 		{% set station_needs_pole = high_prop == '_INFO_PANEL' or roof_prop == '_METAL_ROOF' %}
 		{% set modifier = 'CROSSING' if platform_prop == '_CROSSING' else '' -%}
 
 		{% for axis in AXES -%}
 			spritelayout spritelayout_{{ station_name }}_{{ axis }} {
-				{{ ground_rail(axis) }}
-				{{ buffers(axis) }}
+				{% if track_type == '' -%}
+					{{ ground_rail(axis) }}
+					{{ buffers(axis) }}
+				{% elif track_type == '_TRACKLESS' -%}
+					{{ ground() }}
+				{% endif -%}
 
 				{% if platform_prop == '_CROSSING' -%}
 					{{ prop_crossing(axis) }}
@@ -61,8 +222,13 @@
 					{{ platform_low_asphalt(station_platform_side, 'TOP', axis, modifier) }}
 					{{ platform_low_asphalt(station_platform_side, 'BOTTOM', axis, modifier) }}
 				{% elif platform_type == 'HIGH_ASPHALT' -%}
-					{{ platform_high_asphalt(station_platform_side, 'TOP', axis) }}
-					{{ platform_high_asphalt(station_platform_side, 'BOTTOM', axis) }}
+					{% if track_type == '' -%}
+						{{ platform_high_asphalt(station_platform_side, 'TOP', axis) }}
+						{{ platform_high_asphalt(station_platform_side, 'BOTTOM', axis) }}
+					{% else -%}
+						{{ platform_high_asphalt_trackless(station_platform_side, 'TOP', axis) }}
+						{{ platform_high_asphalt_trackless(station_platform_side, 'BOTTOM', axis) }}
+					{% endif -%}
 				{% endif -%}
 
 				{% if platform_prop == '_UNDERPASS' -%}
@@ -71,69 +237,94 @@
 				{% elif platform_prop == '_BENCH' -%}
 					{{ prop_bench(station_platform_side, 'TOP', axis, platform_height) }}
 					{{ prop_bench(station_platform_side, 'BOTTOM', axis, platform_height) }}
-				{% elif platform_prop == '_OVERPASS' -%}
-					{{ prop_overpass_stairs(station_platform_side, 'TOP', axis, platform_height) }}
-					{{ prop_overpass(station_platform_side, 'TOP', axis, platform_height) }}
-					{{ prop_pack_overpass_poles(station_platform_side, axis, platform_height) }}
-					{% if station_platform_side != 'BOTH' -%}
-						{{ prop_overpass(station_platform_side, 'BOTTOM', axis, platform_height) }}
+				{% elif platform_prop == '_SIGN' -%}
+					{{ prop_station_sign(station_platform_side, 'TOP', axis, platform_height) }}
+					{{ prop_station_sign(station_platform_side, 'BOTTOM', axis, platform_height) }}
+				{% elif platform_prop_height_restriction == -1 -%}
+					{{ prop_pack_overpass_poles(station_platform_side, axis, platform_height, '_OVERPASS' in platform_prop) }}
+					{% if '_STAIRS' in platform_prop -%}
+						{{ prop_overpass_stairs(station_platform_side, 'TOP', axis, platform_height) }}
 					{% endif -%}
-					{{ prop_overpass_stairs(station_platform_side, 'BOTTOM', axis, platform_height) }}
+					{% if '_OVERPASS' in platform_prop -%}
+						{{ prop_pack_overpass(station_platform_side, axis, '_STAIRS' in platform_prop) }}
+					{% endif -%}
+					{% if '_STAIRS' in platform_prop -%}
+						{{ prop_overpass_stairs(station_platform_side, 'BOTTOM', axis, platform_height) }}
+					{% endif -%}
 				{% endif -%}
 
 				{% if station_needs_pole -%}
-					{{ prop_poles(station_platform_side, 'TOP', axis, platform_height + 1) }}
-					{{ prop_poles(station_platform_side, 'BOTTOM', axis, platform_height + 1) }}
+					{{ prop_poles(station_platform_side, 'TOP', axis, platform_height) }}
+					{{ prop_poles(station_platform_side, 'BOTTOM', axis, platform_height) }}
 				{% endif -%}
 				{% if high_prop == '_INFO_PANEL' -%}
-					{{ prop_info_panel(station_platform_side, 'TOP', axis, platform_height) }}
-					{{ prop_info_panel(station_platform_side, 'BOTTOM', axis, platform_height) }}
+					{{ prop_info_panel(station_platform_side, 'TOP', axis) }}
+					{{ prop_info_panel(station_platform_side, 'BOTTOM', axis) }}
 				{% endif -%}
 				{% if roof_prop == '_METAL_ROOF' -%}
-					{{ prop_metal_roof(station_platform_side, 'TOP', axis, platform_height + 1) }}
-					{{ prop_metal_roof(station_platform_side, 'BOTTOM', axis, platform_height + 1) }}
+					{{ prop_metal_roof(station_platform_side, 'TOP', axis) }}
+					{{ prop_metal_roof(station_platform_side, 'BOTTOM', axis) }}
 				{% endif -%}
 
-				{{ cargo_passengers(station_platform_side, 'TOP', axis, 1) }}
-				{{ cargo_passengers(station_platform_side, 'BOTTOM', axis, 1) }}
+				{% if fence_prop == '_FENCE' -%}
+					{{ prop_fence(station_platform_side, 'TOP', axis, platform_height) }}
+					{{ prop_fence(station_platform_side, 'BOTTOM', axis, platform_height) }}
+				{% endif -%}
+
+				{% if platform_prop_height_restriction != -1 -%}
+					{{ cargo_passengers(station_platform_side, 'TOP', axis, platform_height) }}
+					{{ cargo_passengers(station_platform_side, 'BOTTOM', axis, platform_height) }}
+				{% endif -%}
 			}
 		{% endfor -%}
 
 		item(FEAT_STATIONS, station_{{ station_name }}, {{ station_id }}) {
 			property {
-				class: "ap\01\01";
-				classname: string(STR_CLASS_NAME_PASSENGER_PLATFORMS);
+				class: "{{ 'ROPP' if track_type == '' else 'ROPQ' }}";
+				classname: string(STR_CLASS_NAME_PASSENGER_PLATFORMS{{ track_type }});
 				name: string(STR_STATION_NAME_{{ platform_type }}_{{ station_platform_side}});
 				cargo_random_triggers: [PASS];
-				{% if not station_needs_pole %}
-					heights: [1, 1, 1, 1];
-				{% else %}
-					heights: [3, 3, 3, 3];
-				{% endif %}
+				{% if track_type != '' -%}
+					tile_flags: [bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE)];
+				{% endif -%}
+				{% if platform_prop == '_OVERPASS' -%}
+					{% set bridge_height = 3 -%}
+				{% elif station_needs_pole -%}
+					{% set bridge_height = 2 -%}
+				{% else -%}
+					{% set bridge_height = 1 -%}
+				{% endif -%}
+				heights: [{{ bridge_height }}, {{ bridge_height }}, {{ bridge_height }}, {{ bridge_height }}];
 				badges: [
 					"flag/RO",
 					"region/europe/eastern",
 					"role/passenger",
 					"platform_type/{{ platform_type|lower }}",
 					"platform_side/{{ station_platform_side|lower }}",
-					{% if platform_prop == '_BENCH' %}
+					{% if platform_prop == '_SIGN' -%}
+						"sign/romanian",
+					{% endif -%}
+					{% if fence_prop == '_FENCE' -%}
+						"fence/between_tracks",
+					{% endif -%}
+					{% if platform_prop == '_BENCH' -%}
 						"benches/romanian",
-					{% endif %}
-					{% if high_prop == '_INFO_PANEL'  %}
+					{% endif -%}
+					{% if high_prop == '_INFO_PANEL' -%}
 						"screen/romanian",
-					{% endif %}
-					{% if platform_prop == '_CROSSING' %}
-						"platform_crossing/level",
-					{% endif %}
-					{% if platform_prop == '_UNDERPASS' %}
+					{% endif -%}
+					{% if platform_prop == '_CROSSING' -%}
+						"platform_crossing/level/concrete_slabs",
+					{% endif -%}
+					{% if platform_prop == '_UNDERPASS' -%}
 						"platform_crossing/underpass",
-					{% endif %}
-					{% if platform_prop == '_OVERPASS' %}
+					{% endif -%}
+					{% if platform_prop_height_restriction == -1 -%}
 						"platform_crossing/overpass",
-					{% endif %}
-					{% if roof_prop == '_METAL_ROOF' %}
+					{% endif -%}
+					{% if roof_prop == '_METAL_ROOF' -%}
 						"roof/metal",
-					{% endif %}
+					{% endif -%}
 				];
 			}
 			graphics {
@@ -141,15 +332,22 @@
 					spritelayout_{{ station_name }}_X,
 					spritelayout_{{ station_name }}_Y
 				];
-				custom_spritesets: [switch_buffer];
+				custom_spritesets: [
+					switch_buffer,
+					{% if platform_height == 1 -%}
+						switch_overlay_{{ platform_type }},
+					{% endif -%}
+				];
 
-				{% if station_platform_side != 'BOTH' %}
+				{% if station_platform_side != 'BOTH' -%}
 					select_tile_type: switch_tile_type;
-				{% endif %}
+				{% endif -%}
 
 				random_switch_passengers_{{ '1' if station_platform_side != 'BOTH' else '2'}};
 			}
 		}
+	{% endfor -%}
+	{% endfor -%}
 	{% endfor -%}
 	{% endfor -%}
 	{% endfor -%}

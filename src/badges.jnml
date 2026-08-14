@@ -6,11 +6,16 @@
 		"benches",
 		"benches/romanian",
 
+		// Fenches already have a badge defined by Polish Stations, so we'll use it
+		"fence",
+		"fence/between_tracks",
+
 		// Builtin badge
 		"flag/RO",
 
 		"platform_crossing",
-		"platform_crossing/level",
+		"platform_crossing/level/concrete_modern",
+		"platform_crossing/level/concrete_slabs",
 		"platform_crossing/underpass",
 		"platform_crossing/overpass",
 
@@ -37,6 +42,9 @@
 		// Info panels already have a badge defined by Polish Stations, so we'll use it
 		"screen",
 		"screen/romanian",
+
+		"sign",
+		"sign/romanian",
 	}
 
 	spriteset(spriteset_badge_platform_side_top, "img/badges.png") {
@@ -63,8 +71,20 @@
 		{{ template_grid(3, 3, 0, offset_x=0, offset_y=0, width=12, height=12) }}
 	}
 
+	spriteset(spriteset_badge_sign_romanian, "img/badges.png") {
+		{{ template_grid(3, 4, 0, offset_x=0, offset_y=0, width=12, height=12) }}
+	}
+
+	spriteset(spriteset_badge_fence_between_tracks, "img/badges.png") {
+		{{ template_grid(3, 5, 0, offset_x=0, offset_y=0, width=12, height=12) }}
+	}
+
 	spriteset(spriteset_badge_platform_crossing_level, "img/badges.png") {
 		{{ template_grid(4, 1, 0, offset_x=0, offset_y=0, width=12, height=12) }}
+	}
+
+	spriteset(spriteset_badge_platform_crossing_level_new, "img/badges.png") {
+		{{ template_grid(4, 4, 0, offset_x=0, offset_y=0, width=12, height=12) }}
 	}
 
 	spriteset(spriteset_badge_platform_crossing_underpass, "img/badges.png") {
@@ -104,6 +124,22 @@
 			}
 		}
 
+		item(FEAT_BADGES, badge_fence) {
+			property {
+				label: "fence";
+				name: string(STR_BADGE_FENCE);
+			}
+		}
+		item(FEAT_BADGES, badge_fence_between_tracks) {
+			property {
+				label: "fence/between_tracks";
+				name: string(STR_BADGE_FENCE_BETWEEN_TRACKS);
+			}
+			graphics {
+				default: spriteset_badge_fence_between_tracks;
+			}
+		}
+
 		item(FEAT_BADGES, badge_platform_crossing) {
 			property {
 				label: "platform_crossing";
@@ -112,11 +148,20 @@
 		}
 		item(FEAT_BADGES, badge_platform_crossing_level) {
 			property {
-				label: "platform_crossing/level";
+				label: "platform_crossing/level/concrete_slabs";
 				name: string(STR_BADGE_PLATFORM_CROSSING_LEVEL);
 			}
 			graphics {
 				default: spriteset_badge_platform_crossing_level;
+			}
+		}
+		item(FEAT_BADGES, badge_platform_crossing_level_new) {
+			property {
+				label: "platform_crossing/level/concrete_modern";
+				name: string(STR_BADGE_PLATFORM_CROSSING_LEVEL_NEW);
+			}
+			graphics {
+				default: spriteset_badge_platform_crossing_level_new;
 			}
 		}
 		item(FEAT_BADGES, badge_platform_crossing_underpass) {
@@ -235,6 +280,22 @@
 			}
 			graphics {
 				default: spriteset_badge_screen_romanian;
+			}
+		}
+
+		item(FEAT_BADGES, badge_sign) {
+			property {
+				label: "sign";
+				name: string(STR_BADGE_SIGN);
+			}
+		}
+		item(FEAT_BADGES, badge_sign_romanian) {
+			property {
+				label: "sign/romanian";
+				name: string(STR_BADGE_SIGN_ROMANIAN);
+			}
+			graphics {
+				default: spriteset_badge_sign_romanian;
 			}
 		}
 	}

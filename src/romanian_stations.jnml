@@ -73,3 +73,9 @@ spriteset(spriteset_empty, "img/things.png") {
 
 {% from 'passenger_platform_stations.jnml' import init_passenger_platform_stations -%}
 {{ init_passenger_platform_stations() }}
+
+{% from 'buildings.jnml' import init_buildings -%}
+{{ init_buildings() }}
+
+{% from 'waypoints.jnml' import init_waypoints -%}
+{{ init_waypoints() }}

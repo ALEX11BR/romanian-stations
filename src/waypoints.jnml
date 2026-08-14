@@ -1,0 +1,114 @@
+{% from 'buffers.jnml' import buffers %}
+{% from 'common.jnml' import AXES, use_default_palette, ground_rail %}
+{% from 'props.jnml' import prop_crossing, prop_crossing_new, prop_ramp_crossing, prop_pack_overpass_poles, prop_pack_overpass %}
+{% from 'spriteset_things.jnml' import THINGS_IDS %}
+
+{% macro init_waypoints() -%}
+	// Bits we'll use here:
+	// 3: End crossing to top platform
+	// 4: End crossing to bottom platform
+	// 5: End crossing on the top side (as opposed to the bottom side), or prop information if both 3 and 4 are not set
+	{% for prop, station_id in [
+		('_EMPTY', 0),
+		('_SIGN', 64),
+		('_OVERPASS', 32),
+		('_CROSSING', 16),
+		('_CROSSING_END', 32 + 16),
+		('_CROSSING_END_BOTH_PLATFORM_TOP_SIDE', 12 + 16),
+		('_CROSSING_END_BOTH_PLATFORM_BOTTOM_SIDE', 12),
+		('_CROSSING_END_TOP_PLATFORM_TOP_SIDE', 4 + 16),
+		('_CROSSING_END_TOP_PLATFORM_BOTTOM_SIDE', 4),
+		('_CROSSING_END_BOTTOM_PLATFORM_TOP_SIDE', 8 + 16),
+		('_CROSSING_END_BOTTOM_PLATFORM_BOTTOM_SIDE', 8),
+	] -%}
+		{% set station_name = 'WAYPOINT' + prop -%}
+		{% set side = 'TOP' if '_TOP_SIDE' in prop else 'BOTTOM' -%}
+		{% set station_platform_side = 'TOP' if '_TOP_PLATFORM' in prop else ('BOTTOM' if '_BOTTOM_PLATFORM' in prop else 'BOTH') -%}
+
+		{% for axis in AXES -%}
+			{% set other_axis = 'X' if axis == 'Y' else 'Y' -%}
+			spritelayout spritelayout_{{ station_name }}_{{ axis }} {
+				{{ ground_rail(axis) }}
+				{{ buffers(axis) }}
+
+				{% if prop == '_CROSSING' -%}
+					{{ prop_crossing(axis) }}
+				{% endif -%}
+				{% if '_CROSSING_END' in prop -%}
+					{{ prop_crossing_new(axis) }}
+				{% endif -%}
+				{% if '_CROSSING_END_' in prop -%}
+					{{ prop_ramp_crossing(station_platform_side, 'TOP', axis, side) }}
+					{{ prop_ramp_crossing(station_platform_side, 'BOTTOM', axis, side) }}
+				{% endif -%}
+				{% if prop == '_OVERPASS' -%}
+					{{ prop_pack_overpass_poles('BOTH', axis, 0, false) }}
+					{{ prop_pack_overpass('BOTH', axis, false) }}
+				{% endif -%}
+				{% if prop == '_SIGN' -%}
+					building {
+						sprite: spriteset_things({{ THINGS_IDS['WHITE_SIGN_FRONTAL_' + axis] }});
+						{{ use_default_palette() }}
+						{{ axis|lower }}offset: 7;
+						{{ other_axis|lower }}offset: 1;
+						zoffset: 0;
+						{{ axis|lower }}extent: 0;
+						{{ other_axis|lower }}extent: 2;
+						zextent: 3;
+					}
+					building {
+						sprite: spriteset_things({{ THINGS_IDS['WHITE_SIGN_FRONTAL_' + axis] }});
+						{{ use_default_palette() }}
+						{{ axis|lower }}offset: 7;
+						{{ other_axis|lower }}offset: 13;
+						zoffset: 0;
+						{{ axis|lower }}extent: 0;
+						{{ other_axis|lower }}extent: 2;
+						zextent: 3;
+					}
+				{% endif -%}
+			}
+		{% endfor -%}
+
+		item(FEAT_STATIONS, station_{{ station_name }}, {{ station_id }}) {
+			property {
+				class: "\FFROP";
+				classname: string(STR_CLASS_NAME_WAYPOINT);
+				name: string(STR_STATION_NAME_{{ station_name }});
+				{% if prop == '_OVERPASS' -%}
+					{% set bridge_height = 3 -%}
+				{% else -%}
+					{% set bridge_height = 1 -%}
+				{% endif -%}
+				heights: [{{ bridge_height }}, {{ bridge_height }}, {{ bridge_height }}, {{ bridge_height }}];
+				badges: [
+					"flag/RO",
+					"region/europe/eastern",
+					{% if prop == '_CROSSING' -%}
+						"platform_crossing/level/concrete_slabs",
+					{% endif -%}
+					{% if '_CROSSING_END' in prop -%}
+						"platform_crossing/level/concrete_modern",
+					{% endif -%}
+					{% if '_CROSSING_END_' in prop -%}
+						"platform_side/{{ station_platform_side|lower }}",
+					{% endif -%}
+					{% if prop == '_OVERPASS' -%}
+						"platform_crossing/overpass",
+					{% endif -%}
+				];
+			}
+			graphics {
+				sprite_layouts: [
+					spritelayout_{{ station_name }}_X,
+					spritelayout_{{ station_name }}_Y
+				];
+				custom_spritesets: [switch_buffer];
+
+				{% if '_CROSSING_END_' in prop and '_BOTH_PLATFORM' not in prop -%}
+					select_tile_type: switch_tile_type;
+				{% endif -%}
+			}
+		}
+	{% endfor -%}
+{% endmacro %}

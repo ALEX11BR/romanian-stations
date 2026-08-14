@@ -1,0 +1,53 @@
+{% from 'common.jnml' import AXES, use_default_palette, ground %}
+{% from 'spriteset_things.jnml' import THINGS_IDS %}
+
+{% macro init_buildings() -%}
+	// Bits we'll use here:
+	// 3: End crossing to top platform
+	// 4: End crossing to bottom platform
+	// 5: End crossing on the top side (as opposed to the bottom side), or prop information if both 3 and 4 are not set
+	{% for sign_side, side_id in [('TOP', 4), ('BOTTOM', 0)] -%}
+		{% set station_name = 'SINGLE_STATION_SIGN_' + sign_side -%}
+		{% set station_id = 32768 + side_id -%}
+
+		{% for axis in AXES -%}
+		{% set other_axis = 'X' if axis == 'Y' else 'Y' -%}
+		spritelayout spritelayout_{{ station_name }}_{{ axis}} {
+			{{ ground() }}
+
+			building {
+				sprite: spriteset_things({{ THINGS_IDS['STATION_SIGN_FRONTAL_' + axis] }});
+				{{ use_default_palette() }}
+				{{ axis|lower }}offset: 8;
+				{{ other_axis|lower }}offset: {{ 0 if sign_side == 'TOP' else 12 }};
+				zoffset: 0;
+				{{ axis|lower }}extent: 0;
+				{{ other_axis|lower }}extent: 4;
+				zextent: 3;
+			}
+		}
+		{% endfor -%}
+
+		item(FEAT_STATIONS, station_{{ station_name }}, {{ station_id }}) {
+			property {
+				class: "ROPR";
+				classname: string(STR_CLASS_NAME_PASSENGER_BUILDINGS);
+				name: string(STR_STATION_NAME_STATION_SIGN);
+				cargo_random_triggers: [PASS];
+				tile_flags: [bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE)];
+				heights: [1, 1, 1, 1];
+				badges: [
+					"flag/RO",
+					"region/europe/eastern",
+					"sign/romanian",
+				];
+			}
+			graphics {
+				sprite_layouts: [
+					spritelayout_{{ station_name }}_Y,
+					spritelayout_{{ station_name }}_X,
+				];
+			}
+		}
+	{% endfor -%}
+{% endmacro %}

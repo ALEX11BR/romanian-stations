@@ -15,6 +15,9 @@
 	zextent: {{ height }};
 {% endmacro %}
 
+{% macro use_verbatim_palette() -%}
+	recolour_mode: RECOLOUR_NONE;
+{% endmacro %}
 {% macro use_default_palette() -%}
 	recolour_mode: RECOLOUR_REMAP;
 	palette: PALETTE_USE_DEFAULT;
@@ -29,6 +32,11 @@
 {% macro ground_rail(axis) -%}
 	ground {
 		sprite: GROUNDSPRITE_RAIL_{{ axis }};
+	}
+{% endmacro %}
+{% macro ground() -%}
+	ground {
+		sprite: GROUNDSPRITE_NORMAL + 0;
 	}
 {% endmacro %}
 

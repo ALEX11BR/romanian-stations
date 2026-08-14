@@ -57,23 +57,38 @@
 	}
 {% endmacro %}
 
-{% set POLES_HEIGHT = 8 %}
+{% macro prop_crossing_new(axis) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['CROSSING_NEW_' + axis] }});
+		{{ use_default_palette() }}
+		{{ platform_offsets('TOP', 'X', 0, 0, other_axis_extent=16) }}
+	}
+{% endmacro %}
+
+{% macro prop_ramp_crossing(station_platform_side, platform_position, axis, platform_side) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['RAMP_CROSSING_' + platform_side + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 3, 0, other_axis_extent=2) }}
+	}
+{% endmacro %}
 
 {% macro prop_poles(station_platform_side, platform_position, axis, platform_height) -%}
 	building {
-		sprite: spriteset_things({{ THINGS_IDS['POLES_' + axis] }});
+		sprite: spriteset_things({{ THINGS_IDS['POLES_' + (platform_height|string) + '_' + axis] }});
 		{{ use_default_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
 		{{ platform_offsets(platform_position, axis, POLES_HEIGHT, platform_height, other_axis_extent=0) }}
 	}
 {% endmacro %}
 
-{% macro prop_info_panel(station_platform_side, platform_position, axis, platform_height) -%}
+{% macro prop_info_panel(station_platform_side, platform_position, axis) -%}
 	building {
 		sprite: spriteset_things({{ THINGS_IDS['INFO_PANEL_' + axis] }});
 		{{ use_default_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
-		{{ platform_offsets(platform_position, axis, 2, platform_height + POLES_HEIGHT, other_axis_extent=3) }}
+		{{ platform_offsets(platform_position, axis, 2, 3 + POLES_HEIGHT, other_axis_extent=3) }}
 	}
 	childsprite {
 		sprite: spriteset_things({{ THINGS_IDS['INFO_PANEL_TEXT_' + axis] }});
@@ -82,12 +97,12 @@
 	}
 {% endmacro %}
 
-{% macro prop_metal_roof(station_platform_side, platform_position, axis, platform_height) -%}
+{% macro prop_metal_roof(station_platform_side, platform_position, axis) -%}
 	building {
 		sprite: spriteset_things({{ THINGS_IDS['METAL_ROOF_' + platform_position + '_' + axis] }});
 		{{ use_metal_roof_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
-		{{ platform_offsets(platform_position, axis, 6, platform_height + POLES_HEIGHT) }}
+		{{ platform_offsets(platform_position, axis, 6, 4 + POLES_HEIGHT) }}
 	}
 {% endmacro %}
 
@@ -109,17 +124,17 @@
 	}
 {% endmacro %}
 
-{% macro prop_pack_overpass_poles(station_platform_side, axis, platform_height) -%}
+{% macro prop_pack_overpass_poles(station_platform_side, axis, platform_height, include_overpass) -%}
 	{{ prop_overpass_poles(station_platform_side, 'TOP', axis, platform_height) }}
 	{{ prop_overpass_poles(station_platform_side, 'BOTTOM', axis, platform_height) }}
-	{% if station_platform_side != 'BOTH' -%}
+	{% if include_overpass and station_platform_side != 'BOTH' -%}
 		{% set other_side = 'TOP' if station_platform_side == 'BOTTOM' else 'BOTTOM' -%}
 		{{ prop_overpass_poles(other_side, 'TOP', axis, 0) }}
 		{{ prop_overpass_poles(other_side, 'BOTTOM', axis, 0) }}
 	{% endif -%}
 {% endmacro %}
 
-{% macro prop_overpass(station_platform_side, platform_position, axis, platform_height) -%}
+{% macro prop_overpass(station_platform_side, platform_position, axis) -%}
 	{% set other_axis = 'X' if axis == 'Y' else 'Y' -%}
 	building {
 		sprite: spriteset_things({{ THINGS_IDS['OVERPASS_' + ('FOR_TOP_STAIRS_' if platform_position == 'TOP' else '') + axis] }});
@@ -133,6 +148,17 @@
 		{{ other_axis|lower }}extent: 10;
 		zextent: 8;
 	}
+{% endmacro %}
+
+{% macro prop_pack_overpass(station_platform_side, axis, include_stairs) -%}
+	{% if not include_stairs -%}
+		{{ prop_overpass('BOTH', 'BOTTOM', axis) }}
+	{% else -%}
+		{{ prop_overpass(station_platform_side, 'TOP', axis) }}
+		{% if station_platform_side != 'BOTH' -%}
+			{{ prop_overpass(station_platform_side, 'BOTTOM', axis) }}
+		{% endif -%}
+	{% endif -%}
 {% endmacro %}
 
 {% macro platform_concrete_slabs(station_platform_side, platform_position, axis, modifier='') -%}
@@ -151,7 +177,7 @@
 	childsprite {
 		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_CONCRETE_SLABS_' + platform_position + '_' + axis] }});
 		{{ use_default_palette() }}
-		hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0;
+		hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0 || nearby_tile_perpendicular(0, {{ '-1' if platform_position == 'TOP' else '1' }}) == 1;
 	}
 {% endmacro %}
 
@@ -169,15 +195,25 @@
 	}
 	// Platform overlay for continuous platforms (in a way more convenient than using a switch for the platform sprite)
 	childsprite {
-		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_LOW_ASPHALT_' + platform_position + '_' + axis] }});
+		sprite: CUSTOM(1, {{ (2 if platform_position == 'TOP' else 0) + (1 if axis == 'Y' else 0)}});
+		// sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_LOW_ASPHALT_' + platform_position + '_' + axis] }});
 		{{ use_default_palette() }}
-		hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0;
+		// hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0;
 	}
 {% endmacro %}
 
 {% macro platform_high_asphalt(station_platform_side, platform_position, axis) -%}
 	building {
 		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_HIGH_ASPHALT_' + platform_position + '_' + axis] }});
+		{{ use_default_palette() }}
+		{{ hide_sprite_building(station_platform_side, platform_position) }}
+		{{ platform_offsets(platform_position, axis, 3, 0) }}
+	}
+{% endmacro %}
+
+{% macro platform_high_asphalt_trackless(station_platform_side, platform_position, axis) -%}
+	building {
+		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_HIGH_ASPHALT_TRACKLESS_' + axis] }});
 		{{ use_default_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
 		{{ platform_offsets(platform_position, axis, 3, 0) }}
