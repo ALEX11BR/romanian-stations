@@ -164,52 +164,21 @@
 {% macro platform_concrete_slabs(station_platform_side, platform_position, axis, modifier='') -%}
 	// Platform
 	building {
-		{#
-		{% if modifier == '' -%}
-			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_CONCRETE_SLABS_' + axis] }});
-		{% else -%}
-			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_CONCRETE_SLABS_CROSSING_' + platform_position + '_' + axis] }});
-		{% endif -%}
-		#}
 		sprite: CUSTOM({{ 1 if platform_position == 'TOP' else 2 }}, {{ 0 if axis == 'X' else 2 }});
 		{{ use_default_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
 		{{ platform_offsets(platform_position, axis, 1, 0) }}
 	}
-	{#
-	// Platform overlay for continuous platforms (in a way more convenient than using a switch for the platform sprite)
-	childsprite {
-		sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_CONCRETE_SLABS_' + platform_position + '_' + axis] }});
-		{{ use_default_palette() }}
-		hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0 || nearby_tile_perpendicular(0, {{ '-1' if platform_position == 'TOP' else '1' }}) == 1;
-	}
-	#}
 {% endmacro %}
 
 {% macro platform_low_asphalt(station_platform_side, platform_position, axis, modifier='') -%}
 	// Platform
 	building {
-		{#
-		{% if modifier == '' -%}
-			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_LOW_ASPHALT_' + axis] }});
-		{% else -%}
-			sprite: spriteset_things({{ THINGS_IDS['PLATFORM_LOW_ASPHALT_CROSSING_' + platform_position + '_' + axis] }});
-		{% endif -%}
-		#}
 		sprite: CUSTOM({{ 1 if platform_position == 'TOP' else 2 }}, {{ 0 if axis == 'X' else 2 }});
 		{{ use_default_palette() }}
 		{{ hide_sprite_building(station_platform_side, platform_position) }}
 		{{ platform_offsets(platform_position, axis, 1, 0) }}
 	}
-	{#
-	// Platform overlay for continuous platforms (in a way more convenient than using a switch for the platform sprite)
-	childsprite {
-		sprite: CUSTOM(1, {{ 1 + (2 if platform_position == 'TOP' else 0) + (1 if axis == 'Y' else 0)}});
-		// sprite: spriteset_things({{ THINGS_IDS['PLATFORM_OVERLAY_LOW_ASPHALT_' + platform_position + '_' + axis] }});
-		{{ use_default_palette() }}
-		// hide_sprite: platform_number_from_{{ 'start' if platform_position == 'TOP' else 'end' }}(PLATFORM_SAME_STATION) == 0;
-	}
-	#}
 {% endmacro %}
 
 {% macro platform_high_asphalt(station_platform_side, platform_position, axis) -%}

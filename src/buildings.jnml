@@ -12,7 +12,7 @@
 
 		{% for axis in AXES -%}
 		{% set other_axis = 'X' if axis == 'Y' else 'Y' -%}
-		spritelayout spritelayout_{{ station_name }}_{{ axis}} {
+		spritelayout spritelayout_{{ station_name }}_{{ axis}}(a) {
 			{{ ground() }}
 
 			building {
@@ -44,8 +44,8 @@
 			}
 			graphics {
 				sprite_layouts: [
-					spritelayout_{{ station_name }}_Y,
-					spritelayout_{{ station_name }}_X,
+					spritelayout_{{ station_name }}_Y(0),
+					spritelayout_{{ station_name }}_X(0),
 				];
 			}
 		}

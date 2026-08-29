@@ -36,7 +36,7 @@
 {% endmacro %}
 {% macro ground() -%}
 	ground {
-		sprite: GROUNDSPRITE_NORMAL + 0;
+		sprite: GROUNDSPRITE_NORMAL + a;
 	}
 {% endmacro %}
 

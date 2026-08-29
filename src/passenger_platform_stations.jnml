@@ -43,7 +43,7 @@
 		{% set station_id = platform_type_id + stair_type_id + 32768 + 3 -%}
 
 		{% for axis in AXES -%}
-		spritelayout spritelayout_{{ station_name }}_{{ axis}} {
+		spritelayout spritelayout_{{ station_name }}_{{ axis}}(a) {
 			{{ ground() }}
 
 			building {
@@ -110,8 +110,8 @@
 			}
 			graphics {
 				sprite_layouts: [
-					spritelayout_{{ station_name }}_X,
-					spritelayout_{{ station_name }}_Y,
+					spritelayout_{{ station_name }}_X(0),
+					spritelayout_{{ station_name }}_Y(0),
 				];
 
 				random_switch_passengers_{{ '2' if stair_type != '' else '3' }};
@@ -159,7 +159,11 @@
 		{% set modifier = 'CROSSING' if platform_prop == '_CROSSING' else '' -%}
 
 		{% for axis in AXES -%}
-			spritelayout spritelayout_{{ station_name }}_{{ axis }} {
+			spritelayout spritelayout_{{ station_name }}_{{ axis }}
+			{%- if track_type == '_TRACKLESS' -%}
+				(a)
+			{%- endif %}
+			{
 				{% if track_type == '' -%}
 					{{ ground_rail(axis) }}
 					{{ buffers(axis) }}
@@ -285,8 +289,8 @@
 			}
 			graphics {
 				sprite_layouts: [
-					spritelayout_{{ station_name }}_X,
-					spritelayout_{{ station_name }}_Y
+					spritelayout_{{ station_name }}_X{{ '(0)' if track_type == '_TRACKLESS' else ''}},
+					spritelayout_{{ station_name }}_Y{{ '(0)' if track_type == '_TRACKLESS' else '' }}
 				];
 				custom_spritesets: [
 					switch_buffer,
