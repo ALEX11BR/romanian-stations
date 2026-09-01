@@ -14,9 +14,12 @@ $(GRF_NAME).grf: $(GRF_NAME).nml $(wildcard img/*.png) $(wildcard lang/*.lng)
 $(GRF_NAME).nml: $(wildcard src/*.jnml)
 	$(JINJA) $(JINJA_FLAGS) src/$(GRF_NAME).jnml > $(GRF_NAME).nml
 
+$(GRF_NAME).tar: $(GRF_NAME).grf LICENSE.txt
+	tar cf $(GRF_NAME).tar $(GRF_NAME).grf LICENSE.txt
+
 .PHONY: clean
 clean:
-	rm -f $(GRF_NAME).grf $(GRF_NAME).nml
+	rm -f $(GRF_NAME).grf $(GRF_NAME).nml $(GRF_NAME).tar
 
 .PHONY: install
 install: $(GRF_NAME).grf

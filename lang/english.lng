@@ -3,7 +3,7 @@
 DEBUG :Debug
 
 STR_GRF_NAME :Romanian stations
-STR_GRF_DESCRIPTION :{BLUE}Roman{YELLOW}ian st{RED}ations{}{BLACK}A NewGRF with nice Romania-inspired passenger railway stations.{}{SILVER}Features{}{BLACK}- Automatic line end buffers{}- Visible passengers, depending on the station load, that can "move"{}- Single-sided platforms, that can be built in one go with alternating sides (this feature is enabled by default){}- Station roofs of configurable colours (by default red, can be any of the company colours or the owning company's colour)
+STR_GRF_DESCRIPTION :{BLUE}Roman{YELLOW}ian st{RED}ations{}{BLACK}A NewGRF with nice Romania-inspired passenger railway stations.{}{SILVER}Features{}{BLACK}- Automatic line end buffers{}- Visible passengers, depending on the station load, that can "move"{}- Single-sided platforms that can be built in one go with alternating sides (this feature is enabled by default){}- Platform info panel that lights up when a train will arrive at the platform{}- Station roofs of configurable colours (by default red, can be configured by NewGRF settings to be any of the company colours or the owning company's colour){}- Trackless platforms that enable the creation of stations with platforms of equal width of both the marginal ones and the middle ones{}- Badges to filter through the available stations by (some of) their features.
 
 STR_PARAM_METAL_ROOF_RECOLOR :Station roof colour
 STR_PARAM_METAL_ROOF_RECOLOR_DESC :Colour of the metallic station roofs. By default, the colour is set to red.

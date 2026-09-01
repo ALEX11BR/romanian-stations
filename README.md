@@ -2,6 +2,12 @@
 
 A NewGRF with nice Romania-inspired railway stations for OpenTTD.
 
+![Demo 1](demo/demo-romanian-stations-1.png)
+![Demo 2](demo/demo-romanian-stations-2.png)
+![Demo 3](demo/demo-romanian-stations-3.png)
+![Demo 4](demo/demo-romanian-stations-4.png)
+![Demo 5](demo/demo-romanian-stations-5.png)
+
 ## Features
 
 - Automatic line end buffers
@@ -10,6 +16,7 @@ A NewGRF with nice Romania-inspired railway stations for OpenTTD.
 - Platform info panel that lights up when a train will arrive at the platform
 - Station roofs of configurable colours (by default red, can be configured by NewGRF settings to be any of the company colours or the owning company's colour)
 - Trackless platforms that enable the creation of stations with platforms of equal width of both the marginal ones and the middle ones
+- Badges to filter through the available stations by (some of) their features.
 
 ## How to build from source
 
