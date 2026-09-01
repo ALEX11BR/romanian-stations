@@ -50,4 +50,45 @@
 			}
 		}
 	{% endfor -%}
+
+	{% set station_name = 'BALAUSERI' -%}
+	{% set station_id = 32768 + 8 -%}
+
+	{% for axis in AXES -%}
+	{% set other_axis = 'X' if axis == 'Y' else 'Y' -%}
+	spritelayout spritelayout_{{ station_name }}_{{ axis}}(a) {
+		{{ ground() }}
+
+		building {
+			sprite: spriteset_things({{ THINGS_IDS['BUILDING_BALAUSERI_' + axis] }});
+			{{ use_default_palette() }}
+			xoffset: 0;
+			yoffset: 0;
+			zoffset: 0;
+			xextent: 16;
+			yextent: 16;
+			zextent: 16;
+		}
+	}
+	{% endfor -%}
+
+	item(FEAT_STATIONS, station_{{ station_name }}, {{ station_id }}) {
+		property {
+			class: "ROPR";
+			classname: string(STR_CLASS_NAME_PASSENGER_BUILDINGS);
+			name: string(STR_STATION_NAME_BALAUSERI);
+			cargo_random_triggers: [PASS];
+			tile_flags: [bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE), bitmask(STAT_TILE_BLOCKED, STAT_TILE_NOWIRE)];
+			badges: [
+				"flag/RO",
+				"region/europe/eastern",
+			];
+		}
+		graphics {
+			sprite_layouts: [
+				spritelayout_{{ station_name }}_X(0),
+				spritelayout_{{ station_name }}_Y(0),
+			];
+		}
+	}
 {% endmacro %}

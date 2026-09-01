@@ -197,5 +197,10 @@
 		{{ template_grid(2, 3, 6, filename="img/overpass.png") }}
 		{%- do THINGS_IDS.update({'OVERPASS_POLES_0_Y': THINGS_IDS|length}) -%}
 		{{ template_grid(2, 4, 6, filename="img/overpass.png") }}
+
+		{%- do THINGS_IDS.update({'BUILDING_BALAUSERI_X': THINGS_IDS|length}) -%}
+		{{ template_grid(1, 1, 14, filename="img/buildings.png") }}
+		{%- do THINGS_IDS.update({'BUILDING_BALAUSERI_Y': THINGS_IDS|length}) -%}
+		{{ template_grid(1, 2, 14, filename="img/buildings.png") }}
 	}
 {%- endmacro %}
