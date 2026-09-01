@@ -14,8 +14,8 @@ $(GRF_NAME).grf: $(GRF_NAME).nml $(wildcard img/*.png) $(wildcard lang/*.lng)
 $(GRF_NAME).nml: $(wildcard src/*.jnml)
 	$(JINJA) $(JINJA_FLAGS) src/$(GRF_NAME).jnml > $(GRF_NAME).nml
 
-$(GRF_NAME).tar: $(GRF_NAME).grf LICENSE.txt
-	tar cf $(GRF_NAME).tar $(GRF_NAME).grf LICENSE.txt
+$(GRF_NAME).tar: $(GRF_NAME).grf license.txt
+	tar cf $(GRF_NAME).tar $(GRF_NAME).grf license.txt
 
 .PHONY: clean
 clean:
